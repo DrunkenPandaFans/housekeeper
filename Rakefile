@@ -1,4 +1,5 @@
 require 'rake/testtask'
+require 'fileutils'
 
 Rake::TestTask.new do |t|
  t.libs << 'app' << 'test'

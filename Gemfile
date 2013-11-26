@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'rake'
 
@@ -13,5 +13,6 @@ gem 'bson'
 gem 'bson_ext'
 
 # tests
-gem 'coveralls', :require => false, :groups => [:test]
-gem 'mocha', :require => false, :groups => [:test]
+gem 'minitest', :require => false
+gem 'coveralls', :require => false
+gem 'mocha', :require => false
