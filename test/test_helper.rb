@@ -13,5 +13,3 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 
 SimpleCov.start
-
-require 'boot.rb'
