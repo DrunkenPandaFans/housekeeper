@@ -16,7 +16,7 @@ module Housekeeper
               "send_sms" => user[:send_sms],
               "google_token" => user[:google_token]}
       
-      @db["users"].update({"_id" => user[:token]}, data})
+      @db["users"].update({"_id" => user[:token]}, data)
     end
 
     def self.remove(token)
