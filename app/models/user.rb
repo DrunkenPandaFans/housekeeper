@@ -6,7 +6,12 @@ module Housekeeper
     end
 
     def save(user)
-      @db["users"].insert(user)
+      data = {"default_group" => user[:default_group],
+              "email" => user[:email],
+              "send_sms" => user[:send_sms],
+              "google_token" => user[:google_token]}
+
+      @db["users"].insert(data)
     end
 
     def update(user)
@@ -29,7 +34,7 @@ module Housekeeper
     end
 
     def self.find_all()
-      users = $mongo.db["users"].find.map(transform)
+      users = @db["users"].find.map(transform)
     end
 
   private

@@ -6,7 +6,7 @@ describe Housekeeper::User do
   before do
     @db = mock()
     @collection = mock()
-    @db.expects(:[]).with("users").return(@collection)
+    @db.expects(:[]).with("users").returns(@collection)
   end
 
   describe "should save user" do
@@ -15,17 +15,17 @@ describe Housekeeper::User do
     end
     
     it "user call insert on 'users' collection" do
-      val expectedDoc = {"send_sms" => true,
-                         "google_token" => "abcd",
-                         "email" => "my@email.com",
-                         "default_group" => "mygroup"}
+      expectedDoc = {"send_sms" => true,
+                     "google_token" => "abcd",
+                     "email" => "my@email.com",
+                     "default_group" => "mygroup"}
       @collection.expects(:insert).with(expectedDoc).once
     
 
       subject.save({:send_sms => true,
                     :google_token => "abcd",
                     :email => "my@email.com",
-                     :default_group => "mygroup"})          
+                    :default_group => "mygroup"})          
     end
   end
 end
