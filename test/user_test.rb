@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'models/user'
 
-describe User do
+describe Housekeeper::User do
   
   setup do
     @db = mock()
@@ -11,7 +11,7 @@ describe User do
 
   describe "should save user" do
     subject do
-      User.new @db
+      Housekeeper::User.new @db
     end
 
     val expectedDoc = {"send_sms" => true,
