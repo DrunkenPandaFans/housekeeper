@@ -24,16 +24,16 @@ module Housekeeper
       @db["users"].update({"_id" => user[:token]}, data)
     end
 
-    def self.remove(token)
+    def remove(token)
       @db["users"].remove("_id" => token)
     end
 
-    def self.find(token)
+    def find(token)
       data = @db["users"].find("_id" => token)
       transform(data)
     end
 
-    def self.find_all()
+    def find_all()
       users = @db["users"].find.map(transform)
     end
 
