@@ -11,14 +11,11 @@ describe Housekeeper::User do
     Housekeeper.expects(:mongo).returns(db)    
   end  
 
-  describe "save" do
-    before do
-      @token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
-      @user = Housekeeper::User.new "octocat", "octo@github.com", @token 
-    end
+  describe "save" do    
 
     subject do
-      @user
+      token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
+      Housekeeper::User.new "octocat", "octo@github.com", token      
     end    
     
     it "calls insert on 'users' collection" do
@@ -43,23 +40,37 @@ describe Housekeeper::User do
 
   describe "update" do
     subject do
-      Housekeeper::User.new @db
+      token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
+      Housekeeper::User.new "octocat", "octo@github.com", token
     end
 
     it "calls update on 'users' collection" do
-      expected_data = {"_id" => "token",
-                     "send_sms" => true,
-                     "google_token" => "abcds",
-                     "email" => "my@email.com",
-                     "default_group" => "mygroup"}
-      @collection.expects(:update)
-        .with({"_id" => "token"}, expected_data).once
+      expected_data = {"_id" => "octocat",
+                       "email" => "octocat_mama@github.com",
+                       "google_token" => {
+                          "refresh_token" => "abcs3d", 
+                          "access_token" => "accessthis2",
+                          "expires_in" => 12345,
+                          "issued_at" => 76543209}}
 
-      subject.update({:token => "token",
-                      :send_sms => true,
-                      :google_token => "abcds",
-                      :email => "my@email.com",
-                      :default_group => "mygroup"})
+      @collection.expects(:update)
+        .with({"_id" => "octocat"}, expected_data).once
+
+      subject.email = "octocat_mama@github.com"
+      subject.token.refresh_token = "abcs3d"
+      subject.token.access_token = "accessthis2"
+      subject.token.expires_in = 12345
+      subject.token.issued_at = 76543209
+
+      subject.update
+    end
+
+    it "returns itself" do      
+      @collection.expects(:update).once
+
+      subject.email = "octocat_mama@github.com"
+
+      subject.update.must_equal subject
     end
   end
 
