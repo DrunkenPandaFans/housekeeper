@@ -24,7 +24,7 @@ module Housekeeper
     #
     # Returns all users.
     def self.all
-      Housekeeper::mongo["users"].find map do |data|
+      Housekeeper::mongo["users"].find.map do |data|
         User.transform(data) 
       end
     end
@@ -51,12 +51,12 @@ module Housekeeper
               "google_token" => @token.to_hash}
       Housekeeper::mongo["users"].insert(data)
       self
-    end
+    end    
 
     private
 
       def self.transform(user_data)
-        token = GoogleToken.new user_data["google_token"]
+        token = GoogleToken.create user_data["google_token"]
         User.new user_data["_id"], user_data["email"], token
       end
   end
