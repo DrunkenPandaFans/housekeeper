@@ -51,7 +51,18 @@ module Housekeeper
               "google_token" => @token.to_hash}
       Housekeeper::mongo["users"].insert(data)
       self
-    end    
+    end
+
+    # Public: Update the user
+    #
+    # Returns itself
+    def update
+      data = {"_id" => @login,
+              "email" => @email,
+              "google_token" => @token.to_hash}
+      Housekeeper::mongo["users"].update({"_id" => @login}, data)
+      self
+    end   
 
     private
 
