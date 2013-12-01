@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'models/user'
 
 describe Housekeeper::User do
   
