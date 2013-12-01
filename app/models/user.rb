@@ -6,18 +6,23 @@ module Housekeeper
     # Public: The email address listed on Google account
     attr_accessor :email
 
-    # Public: The authentication token to Google Sign In
+    # Public: The personal authentication token to access Housekeeper API.
     attr_accessor :token
+
+    # Public: The authentication token to Google Sign In
+    attr_accessor :google_token
 
     # Public: Initialize a user.
     #
     # login - The String login of user's Google account
-    # email - The String email address of user's Google account.
-    # token - The GoogleToken authentication token to Google Sign In
-    def initialize(login, email, token)
+    # email - The String email address of user's Google account.    
+    # google_token - The GoogleToken authentication token to Google Sign In
+    # token - The String personal token to access Housekeeper API.
+    def initialize(login, email, google_token, token=nil)
       @login = login
       @email = email
       @token = token
+      @google_token = google_token
     end
 
     # Public: Returns all users
@@ -34,7 +39,7 @@ module Housekeeper
     # Returns the User, or nill if user is not found.
     def self.find(login)
       login.downcase!
-      data = Housekeeper::mongo["users"].find({"_id" => login})
+      data = Housekeeper::mongo["users"].find({"login" => login})
       if data != nil
         User.transform(data)
       else
@@ -46,9 +51,9 @@ module Housekeeper
     #
     # Returns itself
     def save
-      data = {"_id" => @login,
+      data = {"login" => @login,           
               "email" => @email,
-              "google_token" => @token.to_hash}
+              "google_token" => @google_token.to_hash}
       Housekeeper::mongo["users"].insert(data)
       self
     end
@@ -57,18 +62,19 @@ module Housekeeper
     #
     # Returns itself
     def update
-      data = {"_id" => @login,
+      data = {"_id" => @token,
+              "login" => @login,
               "email" => @email,
-              "google_token" => @token.to_hash}
-      Housekeeper::mongo["users"].update({"_id" => @login}, data)
+              "google_token" => @google_token.to_hash}
+      Housekeeper::mongo["users"].update({"_id" => @token}, data)
       self
     end   
 
     private
 
       def self.transform(user_data)
-        token = GoogleToken.create user_data["google_token"]
-        User.new user_data["_id"], user_data["email"], token
+        google_token = GoogleToken.create user_data["google_token"]
+        User.new user_data["login"], user_data["email"], google_token, user_data["_id"]
       end
   end
 

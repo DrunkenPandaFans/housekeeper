@@ -19,14 +19,13 @@ describe Housekeeper::User do
     end    
     
     it "calls insert on 'users' collection" do
-      expected_data = {"_id" => "octocat",
-                     "email" => "octo@github.com",
-                     "google_token" => {
+      expected_data = {"login" => "octocat",
+                       "email" => "octo@github.com",
+                       "google_token" => {
                         "refresh_token" => "abcsd",
                         "access_token" => "accessthis",
                         "expires_in" => 1234,
-                        "issued_at" => 765432109
-                      }}
+                        "issued_at" => 765432109}}
       @collection.expects(:insert).with(expected_data).once    
 
       subject.save          
@@ -41,11 +40,12 @@ describe Housekeeper::User do
   describe "update" do
     subject do
       token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
-      Housekeeper::User.new "octocat", "octo@github.com", token
+      Housekeeper::User.new "octocat", "octo@github.com", token, "abcdefgh"
     end
 
     it "calls update on 'users' collection" do
-      expected_data = {"_id" => "octocat",
+      expected_data = {"_id" => "abcdefgh",
+                       "login" => "octocat",
                        "email" => "octocat_mama@github.com",
                        "google_token" => {
                           "refresh_token" => "abcs3d", 
@@ -54,13 +54,13 @@ describe Housekeeper::User do
                           "issued_at" => 76543209}}
 
       @collection.expects(:update)
-        .with({"_id" => "octocat"}, expected_data).once
+        .with({"_id" => "abcdefgh"}, expected_data).once
 
       subject.email = "octocat_mama@github.com"
-      subject.token.refresh_token = "abcs3d"
-      subject.token.access_token = "accessthis2"
-      subject.token.expires_in = 12345
-      subject.token.issued_at = 76543209
+      subject.google_token.refresh_token = "abcs3d"
+      subject.google_token.access_token = "accessthis2"
+      subject.google_token.expires_in = 12345
+      subject.google_token.issued_at = 76543209
 
       subject.update
     end
@@ -78,25 +78,26 @@ describe Housekeeper::User do
 
     before do
       @token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
-      @user = Housekeeper::User.new "octocat", "octo@github.com", @token 
+      @user = Housekeeper::User.new "octocat", "octo@github.com", @token, "abcdefghij" 
     end
 
     it "finds existing user by login" do      
-      expected_data = {"_id" => @user.login,
-                      "email" => @user.email,
-                      "google_token" => @user.token.to_hash}
+      expected_data = {"_id" => @user.token,
+                       "login" => @user.login,
+                       "email" => @user.email,
+                       "google_token" => @user.google_token.to_hash}
 
-      @collection.expects(:find).with({"_id" => @user.login})
+      @collection.expects(:find).with({"login" => @user.login})
         .returns(expected_data).once
 
       actual = Housekeeper::User.find(@user.login)
 
       actual.login.must_equal @user.login
       actual.email.must_equal @user.email
-      actual.token.refresh_token.must_equal @user.token.refresh_token
-      actual.token.access_token.must_equal @user.token.access_token
-      actual.token.expires_in.must_equal @user.token.expires_in
-      actual.token.issued_at.must_equal @user.token.issued_at
+      actual.google_token.refresh_token.must_equal @user.google_token.refresh_token
+      actual.google_token.access_token.must_equal @user.google_token.access_token
+      actual.google_token.expires_in.must_equal @user.google_token.expires_in
+      actual.google_token.issued_at.must_equal @user.google_token.issued_at
     end
 
     it "returns nil if user was not found" do
@@ -106,21 +107,22 @@ describe Housekeeper::User do
     end
 
     it "returns user if his login is in uppercase" do
-      expected_data = {"_id" => @user.login,
-                      "email" => @user.email,
-                      "google_token" => @user.token.to_hash}
+      expected_data = {"_id" => @user.token,
+                       "login" => @user.login,
+                       "email" => @user.email,
+                       "google_token" => @user.google_token.to_hash}
 
       @collection.expects(:find)
-        .with({"_id" => @user.login}).returns(expected_data)
+        .with({"login" => @user.login}).returns(expected_data)
 
       actual = Housekeeper::User.find(@user.login.upcase)
 
       actual.login.must_equal @user.login
       actual.email.must_equal @user.email
-      actual.token.refresh_token.must_equal @token.refresh_token
-      actual.token.access_token.must_equal @token.access_token
-      actual.token.expires_in.must_equal @token.expires_in
-      actual.token.issued_at.must_equal @token.issued_at
+      actual.google_token.refresh_token.must_equal @token.refresh_token
+      actual.google_token.access_token.must_equal @token.access_token
+      actual.google_token.expires_in.must_equal @token.expires_in
+      actual.google_token.issued_at.must_equal @token.issued_at
     end
   end
 
@@ -141,9 +143,10 @@ describe Housekeeper::User do
 
     it "returns all users in collection" do
       users_data = @users.map do |user|
-        {"_id" => user.login,
+        {"_id" => user.token,
+         "login" => user.login,
          "email" => user.email,
-         "google_token" => user.token.to_hash}
+         "google_token" => user.google_token.to_hash}
       end
 
       @collection.expects(:find).returns(users_data).once
@@ -154,10 +157,10 @@ describe Housekeeper::User do
       actual_users.zip(@users).each do |a, e|
         a.login.must_equal e.login
         a.email.must_equal e.email
-        a.token.refresh_token.must_equal e.token.refresh_token
-        a.token.access_token.must_equal e.token.access_token
-        a.token.expires_in.must_equal e.token.expires_in
-        a.token.issued_at.must_equal e.token.issued_at
+        a.google_token.refresh_token.must_equal e.google_token.refresh_token
+        a.google_token.access_token.must_equal e.google_token.access_token
+        a.google_token.expires_in.must_equal e.google_token.expires_in
+        a.google_token.issued_at.must_equal e.google_token.issued_at
       end
     end
   end
