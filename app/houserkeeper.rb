@@ -7,7 +7,7 @@ module Housekeeper
     return @client.db if @client != nil
     @client = MongoClient.new config[":mongo_host"], config[":mongo_port"]      
     @client.db
-  end
+  end  
 
   # Public: Return application configuration
   #
@@ -17,7 +17,9 @@ module Housekeeper
      :client_id => yaml['google_key'],
      :mongo_host => yaml['mongo_host'],
      :mongo_port => yaml['mongo_port'],
-     :mongo_db => yaml['mongo_db']}
+     :mongo_db => yaml['mongo_db'],
+     :google_auth_uri => yaml['google_auth_uri'],
+     :google_token_uri => yaml['google_token_uri']}
   end
 
   private 
