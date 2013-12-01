@@ -28,8 +28,8 @@ module Housekeeper
     #
     # Returns parsed yaml configuration file or empty hash if file is not found.
     def self.yaml
-      if File.exists?('config/play.yml')
-        @yaml ||= YAML.load_file('config/play.yml')
+      if File.exists?('config/housekeeper.yml')
+        @yaml ||= YAML.load_file('config/housekeeper.yml')
       else
         {}
       end
