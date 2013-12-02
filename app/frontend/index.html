@@ -32,9 +32,18 @@
   </head>
 
   <body>  
-    <div id="container" class="container" ng-controller="UserController" ng-cloak>
-      <span id="signin">
+    <div id="userProfile" class="container" ng-controller="UserController" ng-cloak>
+      <span id="signin" ng-show="hideIntermediatelly">
         <span id="gsignin"></span>
+      </span>
+      <span ng-show="hasUserProfile">
+        <a target="_blank" href="{{ userProfile.googlePublicProfileUrl }}">
+          <span class="name">{{ userProfile.googleDisplayName }}</span>
+          <img class="profile-photo" ng-src="{{ userProfile.googlePublicProfilePhotoUrl }}" />
+          <button class="btn btn-danger disconnect" ng-click="disconnect()">
+             Disconnect
+          </button>
+        </a>
       </span>
     </div>    
   </body>
