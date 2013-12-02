@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'rake'
+gem 'foreman'
+gem 'thin'
 
 # web services
 gem 'rack'
