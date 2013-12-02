@@ -1,6 +1,6 @@
 require 'api/profile'
 
-module Play
+module Housekeeper 
   class App < Sinatra::Base
     
     # Enable sessions and set session secret.
