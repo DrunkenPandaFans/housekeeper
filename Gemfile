@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'rake'
 gem 'foreman'
 gem 'thin'
+gem 'sprockets', '~> 2.0'
 
 # web services
 gem 'rack'

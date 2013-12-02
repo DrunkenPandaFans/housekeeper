@@ -1,0 +1,6 @@
+google_key: 541401950578.apps.googleusercontent.com
+google_secret: Ut3rXEp2YPfoW73Ji8tIp0fM
+google_auth_uri: https://accounts.google.com/o/oauth2/auth
+google_token_uri: https://accounts.google.com/o/oauth2/token
+mongo_host: localhost
+mongo_port: 27027
