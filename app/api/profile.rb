@@ -3,11 +3,27 @@ module Housekeeper
 
     post '/connect' do
         #TODO try to find user app token and find if user is already registered
-        #TODO check if user token didn't expired, if it did refresh it
-        #TODO otherwise use it to load user's google profile
-        #TODO if user was not found, get user's token and information
-        #TODO and try to find him in database
-        #TODO if user was not found create new user
+        if !session[:user]
+          token = Housekeeper::GoogleToken.create JSON.parse(request.body.read)
+          #TODO otherwise use it to load user's google profile
+          userProfile = GoogleService::user_info(token)
+               
+          email = userProfile["id"]
+          login = userProfile["nickname"]
+          
+          #TODO if user was not found create new user
+          user = User.new login, email, token
+          user.save
+
+          session[:user] = user
+
+          content_type :json
+          userProfile.to_json
+        else
+          #TODO check if user token didn't expired, if it did refresh it
+          content_type :json
+          "Current user is already connected.".to_json
+        end                                              
     end
 
     post '/disconnect' do

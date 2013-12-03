@@ -58,7 +58,7 @@ module Housekeeper
   				:token_credentials_uri => Housekeeper::config[:google_token_uri],
   				:client_id => Housekeeper::config[:client_id],
   				:client_secret => Housekeeper::config[:client_secret],
-  				:scope => PLUS_LOGIN_SCOPE
+  				:scope => 'https://www.googleapis.com/auth/plus.login'
   			)  			
   		end
   end
