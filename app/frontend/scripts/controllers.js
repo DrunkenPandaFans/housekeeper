@@ -9,7 +9,7 @@ controllers.controller('UserController', function($scope, ProfileService) {
       $scope.userProfile = {};
       $scope.hasUserProfile = false;
       $scope.isSignedIn = false;
-      $scope.hideImmediately = false;
+      $scope.immediateFailed = false ;
     });
   };
 
@@ -17,7 +17,7 @@ controllers.controller('UserController', function($scope, ProfileService) {
     $scope.userProfile = profile;
     $scope.hasUserProfile = true;
     $scope.isSignedIn = true;
-    $scope.hideImmediately = true;
+    $scope.immediateFailed = true;
   };
 
   $scope.signIn = function(authData)  {
@@ -27,6 +27,7 @@ controllers.controller('UserController', function($scope, ProfileService) {
   }
 
   $scope.processAuthentication = function(authResults) {
+    $scope.immediateFailed = false;
     if ($scope.isSignedIn) {
       return;
     }
@@ -36,7 +37,9 @@ controllers.controller('UserController', function($scope, ProfileService) {
       ProfileService.connect(authResults).then(function(profile) {
         $scope.signedIn(profile);
       });
-    } else if (authResults["error"]) {
+    } else if (authResults["error"] === 'immediate_failed') {
+       $scope.immediateFailed = true;
+    } else {
        $('#notifier').addClass("error").html("Oopps!! Something went wrong. Please, try again!!");
     }
   }
@@ -48,7 +51,7 @@ controllers.controller('UserController', function($scope, ProfileService) {
       "theme": "dark",
       "cookiepolicy": "single_host_origin",
       "scopes": "https://www.googleapis.com/auth/plus.login",
-      'requestvisibleactions': 'http://schemas.google.com/AddActivity',
+      'requestvisibleactions': 'http://schemas.google.com/AddActivity'
     });
   }
    
@@ -56,7 +59,7 @@ controllers.controller('UserController', function($scope, ProfileService) {
     $scope.userProfile = {};
     $scope.hasUserProfile = false;
     $scope.isSignedIn = false;
-    $scope.hideImmediately = false;
+    $scope.hideImmediately = true;
     
     $scope.renderSignInButton();    
   };

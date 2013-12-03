@@ -55,7 +55,7 @@ module Housekeeper
   		def self.build_auth
   			Signet::OAuth2::Client.new(
   				:authorization_uri => Housekeeper::config[:google_auth_uri],
-  				:token_credentials_uri => Housekeeper::config[:google_token_uri],
+  				:token_credential_uri => Housekeeper::config[:google_token_uri],
   				:client_id => Housekeeper::config[:client_id],
   				:client_secret => Housekeeper::config[:client_secret],
   				:scope => 'https://www.googleapis.com/auth/plus.login'
