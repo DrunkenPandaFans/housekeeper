@@ -9,6 +9,7 @@ controllers.controller('UserController', function($scope, ProfileService) {
       $scope.userProfile = {};
       $scope.hasUserProfile = false;
       $scope.isSignedIn = false;
+      $scope.hideImmediately = false;
     });
   };
 
@@ -16,7 +17,14 @@ controllers.controller('UserController', function($scope, ProfileService) {
     $scope.userProfile = profile;
     $scope.hasUserProfile = true;
     $scope.isSignedIn = true;
+    $scope.hideImmediately = true;
   };
+
+  $scope.signIn = function(authData)  {
+    $scope.$apply(function() {
+      $scope.processAuthentication(authData);
+    });
+  }
 
   $scope.processAuthentication = function(authResults) {
     if ($scope.isSignedIn) {
@@ -36,7 +44,7 @@ controllers.controller('UserController', function($scope, ProfileService) {
   $scope.renderSignInButton = function() {
     gapi.signin.render('gsignin', {
       "callback": $scope.signIn,
-      "clientid": "__CLIENT_ID__",
+      "clientid": "541401950578.apps.googleusercontent.com",
       "theme": "dark",
       "cookiepolicy": "single_host_origin",
       "scopes": "https://www.googleapis.com/auth/plus.login",
@@ -48,6 +56,7 @@ controllers.controller('UserController', function($scope, ProfileService) {
     $scope.userProfile = {};
     $scope.hasUserProfile = false;
     $scope.isSignedIn = false;
+    $scope.hideImmediately = false;
     
     $scope.renderSignInButton();    
   };
