@@ -19,7 +19,7 @@ describe Housekeeper::GoogleService do
       @auth.expects(:fetch_access_token)
         .returns({"refresh_token" => "abcds",
                   "access_token" => "accessdenied",
-                  "expires_in" => 12323,
+                  "expires_at" => 7654324698,
                   "issued_at" => 7654321098})
         .once
 
@@ -27,7 +27,7 @@ describe Housekeeper::GoogleService do
 
 			token.refresh_token.must_equal "abcds"
 			token.access_token.must_equal "accessdenied"
-			token.expires_in.must_equal 12323
+			token.expires_at.must_equal Time.at(7654324698)
 			token.issued_at.must_equal Time.at(7654321098)
 		end
 
