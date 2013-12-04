@@ -14,11 +14,12 @@ module Housekeeper
 
   		client = build_client
   		client.authorization = auth
-  		client.discovered_api('plus', 'v1')
+
+  		plus = client.discovered_api('plus', 'v1')
 
   		# We should handle errors here
-  		client.execute!(plus.people.get, :userId => 'me').body
-  	end
+  		client.execute!(plus.people.get, :userId => 'me').data
+    end
 
   	# Public: Retrieve user's Google Token.
   	#
@@ -38,7 +39,8 @@ module Housekeeper
       end
 
       return nil if data == nil
-
+      
+      data["issued_at"] = Time.now.to_i
   		Housekeeper::GoogleToken.create(data)
 		end
 
@@ -48,7 +50,7 @@ module Housekeeper
   		#
   		# Returns new Google API client.
   		def self.build_client  			
-  			Google::ApiClient.new
+  			Google::APIClient.new
   		end
 
   		# Private: Build new authorization client based on configuration settings.

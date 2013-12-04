@@ -4,11 +4,14 @@ module Housekeeper
     post '/connect' do
         #TODO try to find user app token and find if user is already registered
         if !session[:user]
-          token = Housekeeper::GoogleToken.create JSON.parse(request.body.read)
+          authData = JSON.parse(request.body.read)
+          code = authData["code"]
+
+          token = Housekeeper::GoogleService.get_token(code)
           #TODO otherwise use it to load user's google profile
-          userProfile = GoogleService::user_info(token)
-               
-          email = userProfile["id"]
+          userProfile = Housekeeper::GoogleService::user_info(token)
+          
+          #TODO fetch user's email
           login = userProfile["nickname"]
           
           #TODO if user was not found create new user
