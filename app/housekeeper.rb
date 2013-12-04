@@ -13,7 +13,7 @@ module Housekeeper
   #
   # Returns application configuration.
   def self.config
-    {:secret => yaml['google_secret'],
+    {:client_secret => yaml['google_secret'],
      :client_id => yaml['google_key'],
      :mongo_host => yaml['mongo_host'],
      :mongo_port => yaml['mongo_port'],
