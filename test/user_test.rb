@@ -23,7 +23,7 @@ describe Housekeeper::User do
                        "google_token" => {
                         "refresh_token" => "abcsd",
                         "access_token" => "accessthis",
-                        "expires_at" => 1234,
+                        "expires_in" => 1234,
                         "issued_at" => 765432109}}
       @collection.expects(:insert).with(expected_data).once    
 
@@ -49,7 +49,7 @@ describe Housekeeper::User do
                        "google_token" => {
                           "refresh_token" => "abcs3d", 
                           "access_token" => "accessthis2",
-                          "expires_at" => 12345,
+                          "expires_in" => 12345,
                           "issued_at" => 76543209}}
 
       @collection.expects(:update)
@@ -58,7 +58,7 @@ describe Housekeeper::User do
       subject.email = "octocat_mama@github.com"
       subject.google_token.refresh_token = "abcs3d"
       subject.google_token.access_token = "accessthis2"
-      subject.google_token.expires_at = 12345
+      subject.google_token.expires_in = 12345
       subject.google_token.issued_at = 76543209
 
       subject.update
@@ -95,7 +95,7 @@ describe Housekeeper::User do
       actual.email.must_equal @user.email
       actual.google_token.refresh_token.must_equal @user.google_token.refresh_token
       actual.google_token.access_token.must_equal @user.google_token.access_token
-      actual.google_token.expires_at.must_equal @user.google_token.expires_at
+      actual.google_token.expires_in.must_equal @user.google_token.expires_in
       actual.google_token.issued_at.must_equal @user.google_token.issued_at
     end
 
@@ -120,7 +120,7 @@ describe Housekeeper::User do
       actual.email.must_equal @user.email
       actual.google_token.refresh_token.must_equal @token.refresh_token
       actual.google_token.access_token.must_equal @token.access_token
-      actual.google_token.expires_at.must_equal @token.expires_at
+      actual.google_token.expires_in.must_equal @token.expires_in
       actual.google_token.issued_at.must_equal @token.issued_at
     end
   end
@@ -158,7 +158,7 @@ describe Housekeeper::User do
         a.email.must_equal e.email
         a.google_token.refresh_token.must_equal e.google_token.refresh_token
         a.google_token.access_token.must_equal e.google_token.access_token
-        a.google_token.expires_at.must_equal e.google_token.expires_at
+        a.google_token.expires_in.must_equal e.google_token.expires_in
         a.google_token.issued_at.must_equal e.google_token.issued_at
       end
     end
