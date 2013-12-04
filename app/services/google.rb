@@ -28,6 +28,8 @@ module Housekeeper
   	def self.get_token(auth_code)
   		auth = build_auth
   		auth.code = auth_code
+      auth.grant_type = 'authorization_code'
+
       begin 
   		  data = auth.fetch_access_token  		  	
       rescue ::Signet::AuthorizationError => err
@@ -58,7 +60,8 @@ module Housekeeper
   				:token_credential_uri => Housekeeper::config[:google_token_uri],
   				:client_id => Housekeeper::config[:client_id],
   				:client_secret => Housekeeper::config[:client_secret],
-  				:scope => 'https://www.googleapis.com/auth/plus.login'
+  				:scope => 'https://www.googleapis.com/auth/plus.login',
+          :redirect_uri => 'postmessage'
   			)  			
   		end
   end
