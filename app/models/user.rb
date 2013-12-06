@@ -93,6 +93,12 @@ module Housekeeper
         data["expires_in"], data["issued_at"])
     end
 
+    def expired?
+      now = Time.now
+      expiration_time = @issued_at + @expires_in
+      now >= expiration_time
+    end
+
     def to_hash
       {"refresh_token" => @refresh_token,
        "access_token" => @access_token,
