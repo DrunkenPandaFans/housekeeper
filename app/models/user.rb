@@ -30,7 +30,7 @@ module Housekeeper
     # Returns all users.
     def self.all
       Housekeeper::mongo["users"].find.map do |data|
-        User.transform(data) 
+        User.transform(data)
       end
     end
 
@@ -51,7 +51,7 @@ module Housekeeper
     #
     # Returns itself
     def save
-      data = {"login" => @login,           
+      data = {"login" => @login,
               "email" => @email,
               "google_token" => @google_token.to_hash}
       Housekeeper::mongo["users"].insert(data)
@@ -68,19 +68,19 @@ module Housekeeper
               "google_token" => @google_token.to_hash}
       Housekeeper::mongo["users"].update({"_id" => @token}, data)
       self
-    end   
+    end
 
     private
 
-      def self.transform(user_data)
-        google_token = GoogleToken.create user_data["google_token"]
-        User.new user_data["login"], user_data["email"], google_token, user_data["_id"]
-      end
+    def self.transform(user_data)
+      google_token = GoogleToken.create user_data["google_token"]
+      User.new user_data["login"], user_data["email"], google_token, user_data["_id"]
+    end
   end
 
   class GoogleToken
     attr_accessor :refresh_token, :access_token, :expires_in, :issued_at
-    
+
     def initialize(refresh_token, access_token, expires_in, issued_at)
       @refresh_token = refresh_token
       @access_token = access_token
@@ -89,8 +89,8 @@ module Housekeeper
     end
 
     def self.create(data)
-      GoogleToken.new(data["refresh_token"], data["access_token"], 
-        data["expires_in"], data["issued_at"])
+      GoogleToken.new(data["refresh_token"], data["access_token"],
+                      data["expires_in"], data["issued_at"])
     end
 
     def expired?

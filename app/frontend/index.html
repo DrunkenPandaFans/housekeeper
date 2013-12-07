@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
+<head>
     <meta charset="utf-8"/>
 
-    <link href="css/bootstrap.css" rel="stylesheet" />
-    
+    <link href="css/bootstrap.css" rel="stylesheet"/>
+
     <script type="text/javascript" src="js/libs/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="js/libs/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/libs/angular.js"></script>
@@ -14,37 +14,37 @@
     <script type="text/javascript" src="js/controllers.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
 
-    <!-- Load Google API and bootstrap AngularJS as callback-->    
+    <!-- Load Google API and bootstrap AngularJS as callback-->
     <script type="text/javascript">
-      (function () {
-        var po = document.createElement('script');
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'https://plus.google.com/js/client:plusone.js?onload=start';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(po, s);
-      })();
+        (function () {
+            var po = document.createElement('script');
+            po.type = 'text/javascript';
+            po.async = true;
+            po.src = 'https://plus.google.com/js/client:plusone.js?onload=start';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(po, s);
+        })();
 
-      function start() {
-        angular.bootstrap($("body"), ["housekeeperApp"])
-      }
+        function start() {
+            angular.bootstrap($("body"), ["housekeeperApp"])
+        }
     </script>
-  </head>
+</head>
 
-  <body>  
-    <div id="userProfile" class="container" ng-controller="UserController" ng-cloak>
+<body>
+<div id="userProfile" class="container" ng-controller="UserController" ng-cloak>
       <span id="signin" ng-show="immediateFailed">
         <span id="gsignin"></span>
       </span>
       <span ng-show="hasUserProfile">
         <a target="_blank" href="{{ userProfile.googlePublicProfileUrl }}">
-          <span class="name">{{ userProfile.googleDisplayName }}</span>
-          <img class="profile-photo" ng-src="{{ userProfile.googlePublicProfilePhotoUrl }}" />
-          <button class="btn btn-danger disconnect" ng-click="disconnect()">
-             Disconnect
-          </button>
+            <span class="name">{{ userProfile.googleDisplayName }}</span>
+            <img class="profile-photo" ng-src="{{ userProfile.googlePublicProfilePhotoUrl }}"/>
+            <button class="btn btn-danger disconnect" ng-click="disconnect()">
+                Disconnect
+            </button>
         </a>
       </span>
-    </div>    
-  </body>
+</div>
+</body>
 </html>

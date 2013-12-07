@@ -5,9 +5,9 @@ module Housekeeper
   # Returns instance of MongoDB client.
   def self.mongo
     return @client.db if @client != nil
-    @client = MongoClient.new config[":mongo_host"], config[":mongo_port"]      
+    @client = MongoClient.new config[":mongo_host"], config[":mongo_port"]
     @client.db
-  end  
+  end
 
   # Public: Return application configuration
   #
@@ -22,16 +22,16 @@ module Housekeeper
      :google_token_uri => yaml['google_token_uri']}
   end
 
-  private 
+  private
 
-    # Public: Return parsed yaml configuration file
-    #
-    # Returns parsed yaml configuration file or empty hash if file is not found.
-    def self.yaml
-      if File.exists?('config/housekeeper.yml')
-        @yaml ||= YAML.load_file('config/housekeeper.yml')
-      else
-        {}
-      end
+  # Public: Return parsed yaml configuration file
+  #
+  # Returns parsed yaml configuration file or empty hash if file is not found.
+  def self.yaml
+    if File.exists?('config/housekeeper.yml')
+      @yaml ||= YAML.load_file('config/housekeeper.yml')
+    else
+      {}
     end
+  end
 end
