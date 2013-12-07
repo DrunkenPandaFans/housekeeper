@@ -32,19 +32,33 @@
 </head>
 
 <body>
-<div id="userProfile" class="container" ng-controller="UserController" ng-cloak>
-      <span id="signin" ng-show="immediateFailed">
-        <span id="gsignin"></span>
-      </span>
-      <span ng-show="hasUserProfile">
-        <a target="_blank" href="{{ userProfile.googlePublicProfileUrl }}">
-            <span class="name">{{ userProfile.googleDisplayName }}</span>
-            <img class="profile-photo" ng-src="{{ userProfile.googlePublicProfilePhotoUrl }}"/>
-            <button class="btn btn-danger disconnect" ng-click="disconnect()">
-                Disconnect
-            </button>
-        </a>
-      </span>
-</div>
+    <div class="container">
+        <nav id="userProfile" class="navbar navbar-inverse navbar-default navbar-fixed-top" 
+            role="navigation" ng-controller="UserController" ng-cloak>
+            <div class="navbar-header">
+                <a href="#" class="navbar-brand">Housekeeper</a>
+            </div>
+            <div class="collapse navbar-collapse  navbar-right">
+              <ul>
+                  <li class="navbar-right">
+                      <span id="signin" ng-show="immediateFailed">
+                        <span id="gsignin"></span>
+                      </span>
+                  </li>
+                  <li class="dropdown" ng-show="hasUserProfile" class="navbar-right navbar-text">                      
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        {{ userProfile.data.displayName }} <b class="caret"></b>
+                        <img class="image-rounded" ng-src="{{ userProfile.data.image }}" 
+                            width="40" height="40"/>            
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Settings</a>
+                        <li><a ng-click="disconnect()">Disconnect</a></li>                    
+                    </ul>                       
+                  </li>
+              </ul>
+          </div>
+        </nav>
+    </div>
 </body>
 </html>

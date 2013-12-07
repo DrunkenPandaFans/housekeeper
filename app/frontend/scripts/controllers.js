@@ -9,7 +9,7 @@ controllers.controller('UserController', function ($scope, ProfileService) {
             $scope.userProfile = {};
             $scope.hasUserProfile = false;
             $scope.isSignedIn = false;
-            $scope.immediateFailed = false;
+            $scope.immediateFailed = true;
         });
     };
 
@@ -17,7 +17,7 @@ controllers.controller('UserController', function ($scope, ProfileService) {
         $scope.userProfile = profile;
         $scope.hasUserProfile = true;
         $scope.isSignedIn = true;
-        $scope.immediateFailed = true;
+        $scope.immediateFailed = false;
     };
 
     $scope.signIn = function (authData) {
