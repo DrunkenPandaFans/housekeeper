@@ -34,17 +34,31 @@ module Housekeeper
       end
     end
 
-    # Public: Finds user
+    # Public: Finds user.
     #
-    # Returns the User, or nill if user is not found.
+    # login - The String login that should be used to find user
+    #
+    # Returns the User, or nil if user is not found.
     def self.find(login)
       login.downcase!
       data = Housekeeper::mongo["users"].find({"login" => login})
-      if data != nil
-        User.transform(data)
-      else
-        nil
-      end
+
+      return nil if !data
+      
+      User.transform(data)      
+    end
+
+    # Public: Finds user by token.
+    #
+    # token - The String personal user token to access Housekeeper API
+    #
+    # Returns the User, or nil if user is not found.
+    def self.find_by_token(token)
+      data = Housekeeper::mongo["users"].find({"_id" => token})
+      
+      return nil if !data
+      
+      User.transform(data)
     end
 
     # Public: Save the user
