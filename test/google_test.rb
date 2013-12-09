@@ -43,27 +43,28 @@ describe Housekeeper::GoogleService do
   describe "user_info" do
 
     before do
-      @token = Housekeeper::GoogleToken.new "refreshthis", "acccess", 12321, 343242
+      @token = Housekeeper::GoogleToken.new "refresh", "access", 3600, 7654321098
     end
 
-    it "returns user info" do
-      expected = {"nickname" => "octocat",
-                  "image" => {"url" => "https://magicimage.com/github/octocate"}}
+    it "returns user profile from plus.people.get for user token" do
+      @auth.expects(:update_token!).with(@token.to_hash)
+      @client.expects(:authorization=).with(@auth)
+
       response = mock()
-      response.stubs(:body).returns(expected)
+      response.expects(:data).returns({
+        "id" => "OctoId",
+        "displayName" => "Octocat Octocatus",
+        "image" => "http://octo"
+      })
       
-      plusMock = mock()
       peopleMock = mock()
-      @client.expects(:discover_api).with('plus', 'v1').returns(plusMock)
-      plusMock.expects(:people).returns(peopleMock)
-      peopleMock.expects(:get).with(:userId => 'me').once
-      @client.expects(:execute!).with(plusMock.people.get).returns(expected)
+      peopleMock.stubs(:get)
 
-      Housekeeper::GoogleService.user_info(@token).must_equal expected
-    end
-
-    it "sets users token" do
-      @auth.expects(:update_token!).with(@token.to_hash).once
+      plusMock = mock()
+      plusMock.stubs(:people).returns(peopleMock)
+      @client.expects(:discovered_api).with('plus', 'v1').returns(plusMock)
+      @client.expects(:execute!).with(plusMock.people.get, {:userId => 'me'})
+        .returns(response)
 
       Housekeeper::GoogleService.user_info(@token)
     end
