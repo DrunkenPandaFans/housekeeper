@@ -87,7 +87,7 @@ describe Housekeeper::User do
                        "google_token" => @user.google_token.to_hash}
 
       @collection.expects(:find).with({"login" => @user.login})
-        .returns(expected_data).once
+        .returns([expected_data]).once
 
       actual = Housekeeper::User.find(@user.login)
 
@@ -100,7 +100,7 @@ describe Housekeeper::User do
     end
 
     it "returns nil if user was not found" do
-      @collection.expects(:find).returns(nil)
+      @collection.expects(:find).returns([nil])
 
       Housekeeper::User.find("a chilling workaholic").must_be_nil
     end
@@ -112,7 +112,7 @@ describe Housekeeper::User do
                        "google_token" => @user.google_token.to_hash}
 
       @collection.expects(:find)
-        .with({"login" => @user.login}).returns(expected_data)
+        .with({"login" => @user.login}).returns([expected_data])
 
       actual = Housekeeper::User.find(@user.login.upcase)
 
