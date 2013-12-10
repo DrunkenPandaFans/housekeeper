@@ -41,9 +41,9 @@ module Housekeeper
     # Returns the User, or nil if user is not found.
     def self.find(login)
       login.downcase!
-      data = Housekeeper::mongo["users"].find({"login" => login})
+      data = Housekeeper::mongo["users"].find({"login" => login}).first
 
-      return nil if !data
+      return nil if data == nil
       
       User.transform(data)      
     end
@@ -54,9 +54,9 @@ module Housekeeper
     #
     # Returns the User, or nil if user is not found.
     def self.find_by_token(token)
-      data = Housekeeper::mongo["users"].find({"_id" => token})
+      data = Housekeeper::mongo["users"].find({"_id" => token}).first
       
-      return nil if !data
+      return nil if data == nil
       
       User.transform(data)
     end

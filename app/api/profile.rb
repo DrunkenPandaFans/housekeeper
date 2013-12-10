@@ -1,37 +1,74 @@
 module Housekeeper
   class Profile < Sinatra::Base
 
-    post '/connect' do
-      #TODO try to find user app token and find if user is already registered
+    post '/connect' do      
+      content_type :json
+
       if !session[:user]
+        # Fetch new user google token
         authData = JSON.parse(request.body.read)
         code = authData["code"]
 
-        token = Housekeeper::GoogleService.get_token(code)
-        #TODO otherwise use it to load user's google profile
-        userProfile = Housekeeper::GoogleService::user_info(token)
+        token = GoogleService.get_token(code)
 
-        #TODO fetch user's email
-        login = userProfile["nickname"]
+        # Fetch user profile information
+        userProfile = user_info(token)
+        
+        login = userProfile[:id]
+        
+        # Try find user
+        user = User.find(login)
+        if user
+          # Update his token
+          user.google_token = token
+          user.update
+        else
+          # Create new user
+          email = userProfile[:email]
 
-        #TODO if user was not found create new user
-        user = User.new login, email, token
-        user.save
+          user = User.new(login, email, token)
+          user.save
+        end        
 
-        session[:user] = user
+        # Set user to session
+        session[:user] = user.token  
 
-        content_type :json
-        userProfile.to_json
+        # Send user info to client
+        userProfile.to_json      
       else
-        #TODO check if user token didn't expired, if it did refresh it
-        content_type :json
-        "Current user is already connected.".to_json
+        # Find user by token
+        user_token = session[:user]
+        user = User.find_by_token(user_token)
+
+        if !user
+          halt 401
+        end
+
+        # Refresh token if it is expired
+        if user.google_token.expired?
+          new_token = GoogleService.get_token(user.token.refresh_code)
+          user.google_token = new_token
+          user.update
+        end
+
+        # Send user info to client
+        user_info(user.token).to_json
       end
     end
 
-    post '/disconnect' do
-      #TODO remove user from session
-      #TODO reset session state
+    def user_info(token)
+      userProfile = GoogleService.user_info(token)
+      userMail = GoogleService.user_email(token)
+
+      {:id => userProfile["id"], 
+       :displayName => userProfile["displayName"],
+       :image => userProfile["image"]["url"],
+       :url => userProfile["url"],
+       :email => userMail}
+    end
+
+    post '/disconnect' do      
+      session.delete(:user)      
     end
   end
 end
