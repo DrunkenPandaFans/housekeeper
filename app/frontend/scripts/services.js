@@ -11,7 +11,7 @@ services.factory("ProfileService", function ($http) {
     };
 
     profileService.disconnect = function () {
-        return $http.post('disconnect');
+        return $http.post('/disconnect');
     };
 
     return profileService;

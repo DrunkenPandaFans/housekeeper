@@ -5,7 +5,7 @@ var controllers = angular.module("housekeeperControllers", []);
 controllers.controller('UserController', function ($scope, ProfileService) {
 
     $scope.disconnect = function () {
-        ProfileService.disconnect.then(function () {
+        ProfileService.disconnect().then(function () {
             $scope.userProfile = {};
             $scope.hasUserProfile = false;
             $scope.isSignedIn = false;
