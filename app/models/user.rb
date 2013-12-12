@@ -88,7 +88,8 @@ module Housekeeper
 
     def self.transform(user_data)
       google_token = GoogleToken.create user_data["google_token"]
-      User.new user_data["login"], user_data["email"], google_token, user_data["_id"]
+      User.new user_data["login"], user_data["email"], 
+        google_token, user_data["_id"].to_s
     end
   end
 
