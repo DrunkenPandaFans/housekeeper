@@ -108,33 +108,4 @@ module Housekeeper
     end
   end
 
-  class GoogleToken
-    attr_accessor :refresh_token, :access_token, :expires_in, :issued_at
-
-    def initialize(refresh_token, access_token, expires_in, issued_at)
-      @refresh_token = refresh_token
-      @access_token = access_token
-      @expires_in = expires_in
-      @issued_at = Time.at(issued_at)
-    end
-
-    def self.create(data)
-      GoogleToken.new(data["refresh_token"], data["access_token"],
-                      data["expires_in"], data["issued_at"])
-    end
-
-    def expired?
-      now = Time.now
-      expiration_time = @issued_at + @expires_in
-      now >= expiration_time
-    end
-
-    def to_hash
-      {"refresh_token" => @refresh_token,
-       "access_token" => @access_token,
-       "expires_in" => @expires_in,
-       "issued_at" => @issued_at.to_i}
-    end
-
-  end
 end
