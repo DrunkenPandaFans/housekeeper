@@ -24,7 +24,9 @@ describe Housekeeper::User do
                         "refresh_token" => "abcsd",
                         "access_token" => "accessthis",
                         "expires_in" => 1234,
-                        "issued_at" => 765432109}}
+                        "issued_at" => 765432109},
+                        "send_sms" => false,
+                        "default_group" => ""}
       @collection.expects(:insert).with(expected_data).once    
 
       subject.save          
@@ -50,7 +52,9 @@ describe Housekeeper::User do
                           "refresh_token" => "abcs3d", 
                           "access_token" => "accessthis2",
                           "expires_in" => 12345,
-                          "issued_at" => 76543209}}
+                          "issued_at" => 76543209},
+                        "send_sms" => true,
+                        "default_group" => "octocats"}
 
       @collection.expects(:update)
         .with({"_id" => "abcdefgh"}, expected_data).once
@@ -60,6 +64,8 @@ describe Housekeeper::User do
       subject.google_token.access_token = "accessthis2"
       subject.google_token.expires_in = 12345
       subject.google_token.issued_at = 76543209
+      subject.send_sms = true
+      subject.default_group = "octocats"
 
       subject.update
     end
@@ -77,14 +83,18 @@ describe Housekeeper::User do
 
     before do
       @token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
-      @user = Housekeeper::User.new "octocat", "octo@github.com", @token, "abcdefghij" 
+      @user = Housekeeper::User.new "octocat", "octo@github.com", @token, "abcdefghij"
+      @user.send_sms = false
+      @user.default_group = "octocats"
     end
 
     it "finds existing user by login" do      
       expected_data = {"_id" => @user.token,
                        "login" => @user.login,
                        "email" => @user.email,
-                       "google_token" => @user.google_token.to_hash}
+                       "google_token" => @user.google_token.to_hash,
+                       "send_sms" => false,
+                       "default_group" => "octocats"}
 
       @collection.expects(:find).with({"login" => @user.login})
         .returns([expected_data]).once

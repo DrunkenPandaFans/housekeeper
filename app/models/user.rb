@@ -12,6 +12,12 @@ module Housekeeper
     # Public: The authentication token to Google Sign In
     attr_accessor :google_token
 
+    # Public: The indicator if user wants to get sms notifications
+    attr_accessor :send_sms
+
+    # Public: The id of user's default group
+    attr_accessor :default_group
+
     # Public: Initialize a user.
     #
     # login - The String login of user's Google account
@@ -23,6 +29,8 @@ module Housekeeper
       @email = email
       @token = token
       @google_token = google_token
+      @send_sms = false
+      @default_group = ''
     end
 
     # Public: Returns all users
@@ -67,7 +75,9 @@ module Housekeeper
     def save
       data = {"login" => @login,
               "email" => @email,
-              "google_token" => @google_token.to_hash}
+              "google_token" => @google_token.to_hash,
+              "send_sms" => @send_sms,
+              "default_group" => @default_group}
       Housekeeper::mongo["users"].insert(data)
       self
     end
@@ -79,7 +89,9 @@ module Housekeeper
       data = {"_id" => @token,
               "login" => @login,
               "email" => @email,
-              "google_token" => @google_token.to_hash}
+              "google_token" => @google_token.to_hash,
+              "send_sms" => @send_sms,
+              "default_group" => @default_group}
       Housekeeper::mongo["users"].update({"_id" => @token}, data)
       self
     end
@@ -88,8 +100,11 @@ module Housekeeper
 
     def self.transform(user_data)
       google_token = GoogleToken.create user_data["google_token"]
-      User.new user_data["login"], user_data["email"], 
+      user = User.new user_data["login"], user_data["email"], 
         google_token, user_data["_id"].to_s
+      user.send_sms = user_data["send_sms"],
+      user.default_group = user_data["default_group"]
+      user
     end
   end
 
