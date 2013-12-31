@@ -11,6 +11,7 @@ require 'housekeeper'
 require 'services/google'
 
 require 'models/user'
+require 'models/token'
 
 include Mongo
 
