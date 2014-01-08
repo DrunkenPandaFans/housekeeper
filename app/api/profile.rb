@@ -6,15 +6,16 @@ module Housekeeper
 
       if !session[:user]
         # Fetch new user google token
-        authData = JSON.parse(request.body.read)
-        code = authData["code"]
+        auth_data = JSON.parse(request.body.read)
+        puts auth_data
+        code = auth_data["code"]
 
         token = GoogleService.get_token(code)
 
         # Fetch user profile information
-        userProfile = user_info(token)
+        user_profile = user_info(token)
         
-        login = userProfile[:id]
+        login = user_profile[:id]
         
         # Try find user
         user = User.find(login)
@@ -24,7 +25,7 @@ module Housekeeper
           user.update
         else
           # Create new user
-          email = userProfile[:email]
+          email = user_profile[:email]
 
           user = User.new(login, email, token)
           user.save
@@ -34,7 +35,7 @@ module Housekeeper
         session[:user] = user.token  
 
         # Send user info to client
-        userProfile.to_json      
+        user_profile.to_json      
       else
         # Find user by token
         user_token = session[:user]
@@ -57,14 +58,14 @@ module Housekeeper
     end
 
     def user_info(token)
-      userProfile = GoogleService.user_info(token)
-      userMail = GoogleService.user_email(token)
+      user_profile = GoogleService.user_info(token)
+      user_mail = GoogleService.user_email(token)
 
-      {:id => userProfile["id"], 
-       :displayName => userProfile["displayName"],
-       :image => userProfile["image"]["url"],
-       :url => userProfile["url"],
-       :email => userMail}
+      {:id => user_profile["id"], 
+       :displayName => user_profile["displayName"],
+       :image => user_profile["image"]["url"],
+       :url => user_profile["url"],
+       :email => user_mail}
     end
 
     post '/disconnect' do      
