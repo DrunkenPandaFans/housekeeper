@@ -20,3 +20,4 @@ gem 'bson_ext'
 gem 'minitest', :require => false
 gem 'coveralls', :require => false
 gem 'mocha', :require => false
+gem 'rack-test', :require => false
