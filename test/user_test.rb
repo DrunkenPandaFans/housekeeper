@@ -14,12 +14,11 @@ describe Housekeeper::User do
 
     subject do
       token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
-      Housekeeper::User.new "octocat", "octo@github.com", token      
+      Housekeeper::User.new "octo@github.com", token      
     end    
     
     it "calls insert on 'users' collection" do
-      expected_data = {"login" => "octocat",
-                       "email" => "octo@github.com",
+      expected_data = {"email" => "octo@github.com",
                        "google_token" => {
                         "refresh_token" => "abcsd",
                         "access_token" => "accessthis",
@@ -41,12 +40,11 @@ describe Housekeeper::User do
   describe "update" do
     subject do
       token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
-      Housekeeper::User.new "octocat", "octo@github.com", token, "abcdefgh"
+      Housekeeper::User.new "octo@github.com", token, "octocat"
     end
 
     it "calls update on 'users' collection" do
-      expected_data = {"_id" => "abcdefgh",
-                       "login" => "octocat",
+      expected_data = {"_id" => "octocat",                       
                        "email" => "octocat_mama@github.com",
                        "google_token" => {
                           "refresh_token" => "abcs3d", 
@@ -57,7 +55,7 @@ describe Housekeeper::User do
                         "default_group" => "octocats"}
 
       @collection.expects(:update)
-        .with({"_id" => "abcdefgh"}, expected_data).once
+        .with({"_id" => "octocat"}, expected_data).once
 
       subject.email = "octocat_mama@github.com"
       subject.google_token.refresh_token = "abcs3d"
@@ -83,25 +81,24 @@ describe Housekeeper::User do
 
     before do
       @token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
-      @user = Housekeeper::User.new "octocat", "octo@github.com", @token, "abcdefghij"
+      @user = Housekeeper::User.new "octo@github.com", @token, "octocat"
       @user.send_sms = false
       @user.default_group = "octocats"
     end
 
     it "finds existing user by login" do      
-      expected_data = {"_id" => @user.token,
-                       "login" => @user.login,
+      expected_data = {"_id" => @user.id,                       
                        "email" => @user.email,
                        "google_token" => @user.google_token.to_hash,
                        "send_sms" => false,
                        "default_group" => "octocats"}
 
-      @collection.expects(:find).with({"login" => @user.login})
+      @collection.expects(:find).with({"_id" => @user.id})
         .returns([expected_data]).once
 
-      actual = Housekeeper::User.find(@user.login)
+      actual = Housekeeper::User.find(@user.id)
 
-      actual.login.must_equal @user.login
+      actual.id.must_equal @user.id
       actual.email.must_equal @user.email
       actual.google_token.refresh_token.must_equal @user.google_token.refresh_token
       actual.google_token.access_token.must_equal @user.google_token.access_token
@@ -116,17 +113,16 @@ describe Housekeeper::User do
     end
 
     it "returns user if his login is in uppercase" do
-      expected_data = {"_id" => @user.token,
-                       "login" => @user.login,
+      expected_data = {"_id" => @user.id,                       
                        "email" => @user.email,
                        "google_token" => @user.google_token.to_hash}
 
       @collection.expects(:find)
-        .with({"login" => @user.login}).returns([expected_data])
+        .with({"_id" => @user.id}).returns([expected_data])
 
-      actual = Housekeeper::User.find(@user.login.upcase)
+      actual = Housekeeper::User.find(@user.id.upcase)
 
-      actual.login.must_equal @user.login
+      actual.id.must_equal @user.id
       actual.email.must_equal @user.email
       actual.google_token.refresh_token.must_equal @token.refresh_token
       actual.google_token.access_token.must_equal @token.access_token
@@ -139,8 +135,8 @@ describe Housekeeper::User do
     before do
       token1 = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, 765432109
       token2 = Housekeeper::GoogleToken.new "devil", "devilentered", 2345, 9876543
-      user1 = Housekeeper::User.new "octocat", "octo@github.com", token1
-      user2 = Housekeeper::User.new "unicorn", "unicorn@evilplace.com", token2
+      user1 = Housekeeper::User.new "octo@github.com", token1, "octocat"
+      user2 = Housekeeper::User.new "unicorn@evilplace.com", token2, "unicorn"
       @users = [user1, user2]
     end
 
@@ -152,8 +148,7 @@ describe Housekeeper::User do
 
     it "returns all users in collection" do
       users_data = @users.map do |user|
-        {"_id" => user.token,
-         "login" => user.login,
+        {"_id" => user.id,         
          "email" => user.email,
          "google_token" => user.google_token.to_hash}
       end
@@ -164,7 +159,7 @@ describe Housekeeper::User do
       actual_users.size.must_equal 2
       
       actual_users.zip(@users).each do |a, e|
-        a.login.must_equal e.login
+        a.id.must_equal e.id
         a.email.must_equal e.email
         a.google_token.refresh_token.must_equal e.google_token.refresh_token
         a.google_token.access_token.must_equal e.google_token.access_token
