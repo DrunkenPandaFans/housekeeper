@@ -38,16 +38,30 @@ module Housekeeper
       end
     end    
 
-    # Public: Finds user by token.
+    # Public: Finds user by id.
     #
-    # token - The String personal user token to access Housekeeper API
+    # id - The String personal user id to access Housekeeper API
     #
     # Returns the User, or nil if user is not found.
-    def self.find(token)
-      data = Housekeeper::mongo["users"].find({"_id" => token.downcase}).first
+    def self.find(id)
+      object_id = BSON::ObjectId.from_string(id.downcase)
+      data = Housekeeper::mongo["users"].find({"_id" => object_id}).first
       
       return nil if data == nil
       
+      User.transform(data)
+    end
+
+    # Public: Finds user by email.
+    #
+    # email - The String user email
+    #
+    # Returns the User or nil if user is not found.
+    def self.find_by_email(email)
+      data = Housekeeper::mongo["users"].find({"email" => email.downcase}).first
+
+      return nil if data == nil
+
       User.transform(data)
     end
 
@@ -59,7 +73,7 @@ module Housekeeper
               "google_token" => @google_token.to_hash,
               "send_sms" => @send_sms,
               "default_group" => @default_group}
-      Housekeeper::mongo["users"].insert(data)
+      @id = Housekeeper::mongo["users"].insert(data).to_s
       self
     end
 
@@ -67,12 +81,13 @@ module Housekeeper
     #
     # Returns itself
     def update
-      data = {"_id" => @id,              
+      data = {"_id" => BSON::ObjectId.from_string(@id),              
               "email" => @email,
               "google_token" => @google_token.to_hash,
               "send_sms" => @send_sms,
               "default_group" => @default_group}
-      Housekeeper::mongo["users"].update({"_id" => @id}, data)
+      object_id = BSON::ObjectId.from_string(@id.downcase)
+      Housekeeper::mongo["users"].update({"_id" => object_id}, data)
       self
     end
 
