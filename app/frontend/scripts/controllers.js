@@ -2,7 +2,7 @@
 
 var controllers = angular.module("housekeeperControllers", []);
 
-controllers.controller('UserController', function ($scope, ProfileService) {
+controllers.controller('UserController', function ($scope, $window, ProfileService) {
 
     $scope.disconnect = function () {
         ProfileService.disconnect().then(function () {
@@ -18,6 +18,9 @@ controllers.controller('UserController', function ($scope, ProfileService) {
         $scope.hasUserProfile = true;
         $scope.isSignedIn = true;
         $scope.immediateFailed = false;
+
+        // Save user access token to session
+        $window.sessionStorage.token = profile.token
     };
 
     $scope.signIn = function (authData) {

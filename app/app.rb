@@ -25,7 +25,8 @@ module Housekeeper
 
     before do
       if api_request?
-        user_id = session[:user] || ""        
+        user_id = parse_user_id(request["Authorization"])
+        user_id = session[:user] unless user_id.blank?
         user = User.find(user_id)
         
         content_type :json
@@ -41,5 +42,11 @@ module Housekeeper
     get "/" do
       redirect "index.html"
     end
+
+    def parse_user_id(header)
+      return "" unless header
+      header.match(/Bearer (\w+)/).capture
+    end
+
   end
 end

@@ -29,28 +29,30 @@ module Housekeeper
         end        
 
         # Set user to session
-        session[:user] = user 
-
-        # Send user info to client
-        profile.to_json      
+        session[:user] = user                        
       else
         # Find user by token        
         user = session[:user]
 
-        if !user
-          halt 401
-        end
-
         # Refresh token if it is expired
         if user.google_token.expired?
-          new_token = GoogleService.get_token(user.google_token.refresh_code)
+          refresh_token = user.google_token.refresh_token
+          refresh_token = user.google_token.access_token unless refresh_token
+
+          new_token = GoogleService.get_token(refresh_token)
           user.google_token = new_token
           user.update
         end
 
-        # Send user info to client
-        load_profile(user.google_token).to_json
+        # Load user info to client
+        profile = load_profile(user.google_token)        
       end
+      
+      # Send user info to client
+      profile[:token] = session[:user].id
+
+      status 201
+      profile.to_json
     end
 
     post '/disconnect' do      
