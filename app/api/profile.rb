@@ -13,7 +13,6 @@ module Housekeeper
         token = GoogleService.get_token(code)
 
         # Fetch user profile information
-<<<<<<< HEAD
         profile = load_profile(token)
         
         email = profile[:email]
