@@ -13,5 +13,6 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 
 SimpleCov.start
+Coveralls.wear!
 
 require 'boot'
