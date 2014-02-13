@@ -63,7 +63,7 @@ describe Housekeeper::GoogleService do
       plusMock = mock()
       plusMock.stubs(:people).returns(peopleMock)
       @client.expects(:discovered_api).with('plus', 'v1').returns(plusMock)
-      @client.expects(:execute!).with(plusMock.people.get, {:userId => 'me'})
+      @client.expects(:execute!).with(plusMock.people.get, {:userId => 'me', :key => Housekeeper::config[:client_id]})
         .returns(response)
 
       Housekeeper::GoogleService.user_info(@token)

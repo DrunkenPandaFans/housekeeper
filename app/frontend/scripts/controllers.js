@@ -2,7 +2,7 @@
 
 var controllers = angular.module("housekeeperControllers", []);
 
-controllers.controller('UserController', function ($scope, ProfileService) {
+controllers.controller('UserController', function ($scope, $window, ProfileService) {
 
     $scope.disconnect = function () {
         ProfileService.disconnect().then(function () {
@@ -18,6 +18,9 @@ controllers.controller('UserController', function ($scope, ProfileService) {
         $scope.hasUserProfile = true;
         $scope.isSignedIn = true;
         $scope.immediateFailed = false;
+
+        // Save user access token to session
+        $window.sessionStorage.token = profile.token
     };
 
     $scope.signIn = function (authData) {
@@ -50,8 +53,7 @@ controllers.controller('UserController', function ($scope, ProfileService) {
             "clientid": "541401950578.apps.googleusercontent.com",
             "theme": "dark",
             "cookiepolicy": "single_host_origin",
-            "scopes": "https://www.googleapis.com/auth/plus.login",
-            'requestvisibleactions': 'http://schemas.google.com/AddActivity'
+            "scope": "https://www.googleapis.com/auth/plus.login email profile"            
         });
     }
 
