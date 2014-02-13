@@ -62,6 +62,11 @@ module Housekeeper
       status 201      
     end
 
+    # Public: Loads user's profile data for given token.
+    #
+    # token - The GoogleToken to access google user's profile.
+    #
+    # Returns user's profile.
     def load_profile(token)
       profile = GoogleService.user_info(token)
       email_field = profile["emails"].select do |email| 

@@ -93,6 +93,11 @@ module Housekeeper
 
     private
 
+    # Private: Transform user's data to User.
+    #
+    # user_dat - The hash representing user from Mongo.
+    #
+    # Returns user created from user_data.
     def self.transform(user_data)
       google_token = GoogleToken.create user_data["google_token"]
       user = User.new user_data["email"], 
