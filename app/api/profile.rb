@@ -6,12 +6,14 @@ module Housekeeper
 
       if !session[:user]
         # Fetch new user google token
-        authData = JSON.parse(request.body.read)
-        code = authData["code"]
+        auth_data = JSON.parse(request.body.read)
+        puts auth_data
+        code = auth_data["code"]
 
         token = GoogleService.get_token(code)
 
         # Fetch user profile information
+<<<<<<< HEAD
         profile = load_profile(token)
         
         email = profile[:email]
