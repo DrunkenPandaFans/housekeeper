@@ -32,7 +32,7 @@ module Housekeeper
 
         return halt 401, "Only authenticated users have access to this resource!" if !user
 
-        session[:user] = user_id
+        session[:user] = user
       else
         true
       end

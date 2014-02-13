@@ -12,33 +12,30 @@ module Housekeeper
         token = GoogleService.get_token(code)
 
         # Fetch user profile information
-        userProfile = user_info(token)
+        profile = load_profile(token)
         
-        login = userProfile[:id]
+        email = profile[:email]
         
-        # Try find user
-        user = User.find(login)
+        # Find user
+        user = User.find_by_email(email)
         if user
           # Update his token
           user.google_token = token
           user.update
         else
-          # Create new user
-          email = userProfile[:email]
-
-          user = User.new(login, email, token)
+          # Create new user          
+          user = User.new(email, token)
           user.save
         end        
 
         # Set user to session
-        session[:user] = user.token  
+        session[:user] = user 
 
         # Send user info to client
-        userProfile.to_json      
+        profile.to_json      
       else
-        # Find user by token
-        user_token = session[:user]
-        user = User.find_by_token(user_token)
+        # Find user by token        
+        user = session[:user]
 
         if !user
           halt 401
@@ -46,29 +43,35 @@ module Housekeeper
 
         # Refresh token if it is expired
         if user.google_token.expired?
-          new_token = GoogleService.get_token(user.token.refresh_code)
+          new_token = GoogleService.get_token(user.google_token.refresh_code)
           user.google_token = new_token
           user.update
         end
 
         # Send user info to client
-        user_info(user.token).to_json
+        load_profile(user.google_token).to_json
       end
     end
 
-    def user_info(token)
-      userProfile = GoogleService.user_info(token)
-      userMail = GoogleService.user_email(token)
-
-      {:id => userProfile["id"], 
-       :displayName => userProfile["displayName"],
-       :image => userProfile["image"]["url"],
-       :url => userProfile["url"],
-       :email => userMail}
-    end
-
     post '/disconnect' do      
+      halt 401, "User was not logged in" unless session[:user]               
       session.delete(:user)      
+      status 201      
     end
+
+    def load_profile(token)
+      profile = GoogleService.user_info(token)
+      email_field = profile["emails"].select do |email| 
+        email["type"] == "account"
+      end
+
+      email = email_field[0]["value"] if email_field && email_field.size > 0
+
+      {:displayName => profile["displayName"],
+       :image => profile["image"]["url"],
+       :url => profile["url"],
+       :email => email}     
+    end
+    
   end
 end

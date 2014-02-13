@@ -50,8 +50,7 @@ controllers.controller('UserController', function ($scope, ProfileService) {
             "clientid": "541401950578.apps.googleusercontent.com",
             "theme": "dark",
             "cookiepolicy": "single_host_origin",
-            "scopes": "https://www.googleapis.com/auth/plus.login",
-            'requestvisibleactions': 'http://schemas.google.com/AddActivity'
+            "scope": "https://www.googleapis.com/auth/plus.login email profile"            
         });
     }
 
