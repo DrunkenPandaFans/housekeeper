@@ -13,6 +13,9 @@ require 'services/google'
 
 require 'models/user'
 require 'models/token'
+require 'models/circle'
+require 'models/shopping_list'
+require 'models/shopping_item'
 
 include Mongo
 
