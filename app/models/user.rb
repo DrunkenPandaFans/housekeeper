@@ -81,21 +81,19 @@ module Housekeeper
     #
     # Returns itself
     def update
-      data = {"_id" => BSON::ObjectId.from_string(@id),              
+      object_id = BSON::ObjectId.from_string(@id.downcase)
+      data = {"_id" => object_id,
               "email" => @email,
               "google_token" => @google_token.to_hash,
               "send_sms" => @send_sms,
               "default_group" => @default_group}
-      object_id = BSON::ObjectId.from_string(@id.downcase)
       Housekeeper::mongo["users"].update({"_id" => object_id}, data)
       self
-    end
+    end    
 
-    private
-
-    # Private: Transform user's data to User.
+    # Public: Transform user's data to User.
     #
-    # user_dat - The hash representing user from Mongo.
+    # user_data - The hash representing user from Mongo.
     #
     # Returns user created from user_data.
     def self.transform(user_data)
