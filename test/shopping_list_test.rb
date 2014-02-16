@@ -14,7 +14,7 @@ describe Housekeeper::ShoppingList do
       data = subject.to_hash
 
       data["date"].must_equal subject.date
-      data["place"].must_equal subject.shop
+      data["shop"].must_equal subject.shop
       data["items"].zip(subject.items).each do |(actual, expected)|
         actual["name"].must_equal expected.name
         actual["requestor"].must_equal expected.requestor

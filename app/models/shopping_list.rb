@@ -30,7 +30,7 @@ module Housekeeper
       end
       
       {"date" => @date,
-       "place" => @shop,
+       "shop" => @shop,
        "items" => items}
     end    
 
