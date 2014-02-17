@@ -1,5 +1,5 @@
 module Housekeeper
-  class Circle < Sinatra::Base
+  class Circles < Sinatra::Base
 
     get "/circle" do
       user = session[:user]
