@@ -45,6 +45,18 @@ describe Housekeeper::Circle do
       end
     end
 
+    it "saves circle without shopping lists" do
+      subject.shopping_lists = nil
+      saved = subject.save
+
+      circle = @circles.find({"_id" => BSON::ObjectId.from_string(saved.id)}).first
+
+      saved.name.must_equal circle["name"]
+      saved.description.must_equal circle["description"]
+      saved.moderator.must_equal circle["moderator"]
+      circle["shopping_lists"].must_be_empty
+    end
+
     it "sets circle id" do
       saved = subject.save
       saved.wont_be_nil saved.id
@@ -79,6 +91,18 @@ describe Housekeeper::Circle do
       updated = subject.update
       updated.must_be_same_as subject
     end
+
+    it "updates circle without shopping lists" do
+      subject.shopping_lists = nil
+      subject.update
+
+      circle = @circles.find({"_id" => BSON::ObjectId.from_string(subject.id)}).first
+
+      subject.name.must_equal circle["name"]
+      subject.description.must_equal circle["description"]
+      subject.moderator.must_equal circle["moderator"]
+      circle["shopping_lists"].must_be_empty
+    end
   end
 
   describe "find" do
@@ -103,6 +127,18 @@ describe Housekeeper::Circle do
           fi.requestor.must_equal ei.requestor
         end
       end
+    end
+
+    it "should return existing circle even if it doesn't contains shopping lists" do
+      subject.shopping_lists = nil
+      subject.update
+
+      found = Housekeeper::Circle.find(subject.id)
+
+      found.name.must_equal subject.name
+      found.description.must_equal subject.description
+      found.moderator.must_equal subject.moderator
+      found.shopping_lists.must_be_empty
     end
 
     it "returns nil if circle does not exist" do

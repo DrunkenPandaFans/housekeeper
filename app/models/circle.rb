@@ -104,6 +104,7 @@ module Housekeeper
     end
 
     def convert_shopping_lists
+      return [] if @shopping_lists.nil?
       @shopping_lists.map do |list|
         list.to_hash
       end
