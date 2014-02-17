@@ -9,20 +9,19 @@ module Housekeeper
 
     attr_accessor :shopping_lists
 
-    attr_accessor :moderator     
+    attr_accessor :moderator
 
-    def initialize(name, description, moderator)
+    attr_accessor :members  
+
+    def initialize(name, description = "", moderator)
       @name = name
       @description = description
-      @moderator = moderator
-      @users = []
+      @moderator = moderator      
     end
 
     def save    
-      data = {"name" => @name,
-              "description" => @description,
-              "shopping_lists" => convert_shopping_lists(),
-              "moderator" => moderator}
+      data = to_hash
+      data.delete("id")
 
       @id = Housekeeper::mongo["circles"].insert(data).to_s
       self
@@ -30,40 +29,25 @@ module Housekeeper
 
     def update
       object_id = BSON::ObjectId.from_string(@id)
-      data = {
-        "_id" => object_id,
-        "name" => @name,
-        "description" => @description,
-        "shopping_lists" => convert_shopping_lists(),
-        "moderator" => @moderator        
-      }
+      data = to_hash
+      data.delete("id")
+      data["_id"] = object_id
 
       Housekeeper::mongo["circles"].update({"_id" => object_id}, data)
       self
     end
 
-    def self.add_user(circle_id, user_id)      
-      circle_key = BSON::ObjectId.from_string(circle_id)
+    def is_member?(user)
+      @moderator == user.id || @members.include?(user)
+    end      
 
-      Housekeeper::mongo["circles"].update({"_id" => circle_key},
-        {:$push => { "users" => user_id}})
-    end
-
-    def self.remove_user(circle_id, user_id)
-      circle_key = BSON::ObjectId.from_string(circle_id)
-
-      Housekeeper::mongo["circles"].update({"_id" => circle_key},
-        {:$pull => { "users" => user_id}})
-    end
-
-    def self.find_users(circle_id)      
-      user_ids = Housekeeper::mongo["circles"].find({"_id" => circle_id}, 
-        {:fields => ["users"]})
-
-      users_data = Housekeeper::mongo["users"].find({"_id" => { :$in => circle.users}})
-      users_data.map do |data|
-        User.transform(data)
-      end
+    def to_hash()
+      {"id" => @id,
+       "name" => @name,
+       "description" => @description, 
+       "shopping_lists" => convert_shopping_lists(),
+       "moderator" => @moderator,
+       "members" => convert_members()}
     end
 
     def self.remove(id)
@@ -92,6 +76,17 @@ module Housekeeper
       end
     end
 
+    def self.find_by_member(member)
+      data = Housekeeper::mongo["circles"].find({ "users" => { :$in => [member]}}, 
+        {:fields => ["_id", "name", "moderator", "description"]})
+
+      data.map do |d|
+        circle = Circle.new d["name"], d["description"], d["moderator"]
+        circle.id = d["_id"].to_s
+        circle
+      end
+    end
+
     private
 
     def self.transform(data)
@@ -99,6 +94,9 @@ module Housekeeper
       circle.id = data["_id"].to_s
       circle.shopping_lists = data["shopping_lists"].map do |list|
         Housekeeper::ShoppingList.from_hash(list)
+      end
+      circle.members = data["members"].map do |user_id|
+        Housekeeper::User.find(user_id)
       end
       circle
     end
@@ -109,5 +107,13 @@ module Housekeeper
         list.to_hash
       end
     end
+
+    def convert_members
+      return [] if @members.nil?
+      @members.map do |member|
+        member.id
+      end
+    end
+
   end
 end
