@@ -24,14 +24,21 @@ module Housekeeper
     get "/circle/:id" do
       id = params[:id]
 
-      circle =  Housekeeper::Circle.find(id)      
-      user = session[:user]      
+      begin
+        circle =  Housekeeper::Circle.find(id)      
+      rescue BSON::InvalidObjectId
+        return halt 401, "Circle with id #{id} does not exist."
+      end
+
+      return halt 401, "Circle with id #{id} does not exist" unless circle
+
+      user = session[:user]
       
       if circle.is_member? user
         status 201
-        circle.to_json
+        circle.to_hash.to_json
       else
-        halt status 403, "User with sent access token does not have access to this circle"
+        return halt 403, "User with sent access token does not have access to this circle"
       end
 
     end

@@ -38,7 +38,11 @@ module Housekeeper
     end
 
     def is_member?(user)
-      @moderator == user.id || @members.include?(user)
+      members =  @members.select do |member|
+        user.id = member.id
+      end
+
+      @moderator == user.id || members.size > 0
     end      
 
     def to_hash()

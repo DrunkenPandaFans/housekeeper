@@ -19,6 +19,7 @@ describe Housekeeper::Circles do
 
     @octocat_circle = Housekeeper::Circle.new "Octocat's Thruthful",
       "True octocat fans", @user.id
+    @octocat_circle.members = [@userB]
     @octocat_circle.save
     
     other_circle = Housekeeper::Circle.new "The other circle",
@@ -30,7 +31,7 @@ describe Housekeeper::Circles do
     Housekeeper::mongo["users"].remove()
     Housekeeper::mongo["circles"].remove()
   end
-  
+
   it "should remove circle if user is moderator of circle" do
     delete "/circle/#{@octocat_circle.id}", {}, {'rack.session' => {:user => @user}}
     last_response.status.must_equal 201
@@ -52,4 +53,28 @@ describe Housekeeper::Circles do
     delete "/circle/nonexistingid", {}, {'rack.session' => {:user => @user}}
     last_response.status.must_equal 401
   end
+
+  it "should return circle for existing id and if user is circle moderator" do
+    get "/circle/#{@octocat_circle.id}", {}, {'rack.session' => {:user => @user}}
+    last_response.status.must_equal 201
+
+    response = JSON.parse(last_response.body)
+    expected = @octocat_circle.to_hash
+    response.must_equal expected
+  end
+
+  it "should return circle for existing id and if user is circle member" do
+    get "/circle/#{@octocat_circle.id}", {}, {'rack.session' => {:user => @userB}}
+    last_response.status.must_equal 201
+
+    response = JSON.parse(last_response.body)
+    expected = @octocat_circle.to_hash
+    response.must_equal expected
+  end
+
+  it "should return 401 if circle with id does not exist" do
+    get "/circle/someweirdid", {}, {'rack.session' => {:user => @user}}
+    last_response.status.must_equal 401
+  end
+
 end
