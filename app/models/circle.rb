@@ -81,7 +81,7 @@ module Housekeeper
     end
 
     def self.find_by_member(member)
-      data = Housekeeper::mongo["circles"].find({ "users" => { :$in => [member]}}, 
+      data = Housekeeper::mongo["circles"].find({ "members" => { "$in" => [member]}}, 
         {:fields => ["_id", "name", "moderator", "description"]})
 
       data.map do |d|

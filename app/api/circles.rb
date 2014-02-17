@@ -6,19 +6,13 @@ module Housekeeper
       user_id = user.id
 
       moderated = Housekeeper::Circle.find_by_moderator(user_id)
-      circles = moderated.map do |circle|
-        result = circle.to_hash
-        result["is_moderator"] = true
-      end
+      circles = transform_circles(moderated, true)
 
       member = Housekeeper::Circle.find_by_member(user_id)
-      circles << member.map do |circle|
-        result = circle.to_hash
-        result["is_moderator"] = false
-      end
+      circles << transform_circles(member, false)
 
       status 201
-      circles.to_json
+      {"circles" => circles}.to_json
     end
 
     get "/circle/:id" do
@@ -91,7 +85,15 @@ module Housekeeper
 
       Housekeeper::Circle.remove(circle_id)
       status 201
-    end   
+    end 
+
+    def transform_circles(circles, is_moderator)
+      circles.map do |circle|
+        result = circle.to_hash
+        result["is_moderator"] = is_moderator
+        result
+      end      
+    end  
 
   end
 end

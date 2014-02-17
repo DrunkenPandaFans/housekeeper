@@ -77,4 +77,15 @@ describe Housekeeper::Circles do
     last_response.status.must_equal 401
   end
 
+  it "should return 201 and list of users circles" do
+    get "/circle", {}, {'rack.session' => {:user => @userB}}
+    last_response.status.must_equal 201
+
+    response = JSON.parse(last_response.body)
+    expected = @octocat_circle.to_hash
+
+    circles = response["circles"]
+    circles.size.must_equal 2    
+  end
+  
 end
