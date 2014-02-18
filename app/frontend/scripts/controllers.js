@@ -105,13 +105,16 @@ controllers.controller('AddCircleController', function($scope, $location, $windo
    
     UserService.all().success(function (data) {
         $scope.users = data;
+
+        // aliasing members array for sake of template
+        $scope.membersChanges = $scope.circle.members;        
     }).error(function(error) {
         $scope.errorMessage = error;
     });
 
     $scope.hasError = function() {
         $scope.errorMessage !== null && $scope.errorMessage !== "";
-    }    
+    }
 
     $scope.circle = {
         "name": "",
@@ -170,12 +173,52 @@ controllers.controller('AddCircleController', function($scope, $location, $windo
     }
 });
 
-controllers.controller('EditCircleController', function($scope, $location, $routeParams, CircleService) {
-    CircleService.find($routeParams.circleId).success(function(data) {
-        $scope.circle = data;        
-    }).error(function(error) {
-        $scope.errorMessage = error.body;
+controllers.controller('EditCircleController', 
+    function($scope, $location, $routeParams, $q, CircleService, UserService) {
+   
+    $q.all([CircleService.find($routeParams.circleId), UserService.all()])
+    .then(function (resources) {
+        var users = resources[1].data;
+        var circle = resources[0].data;
+
+        var circleMembers = circle.members;
+        for (var i = 0; i < users.length; i++) {
+          var user = users[i];
+          if (circleMembers.indexOf(user.id) != -1) {
+            $scope.membersChanges.push(user);
+          }
+        }
+
+        $scope.circle = circle;
+        $scope.users = users;
     });
+
+    $scope.membersChanges = [];
+
+    $scope.newMember = {
+      "id": "",
+      "email": ""
+    };
+
+    $scope.addMember = function() {
+      var member = angular.copy($scope.newMember);
+      if ($scope.membersChanges.indexOf(member) == -1) {
+          $scope.membersChanges.push(member);
+          $scope.newMember.id = "";
+          $scope.newMember.email = "";
+      } else {
+          $scope.infoMessage = "User is already in circle";
+      }
+    };
+
+    $scope.removeMember = function(user) {
+      var members = $scope.membersChanges;
+      for (var i = 0; i < members.length; i++) {
+        if (members[i] == user) {
+          members.splice(i, 1);
+        }
+      }
+    }
 
     $scope.submit = function() {
         if ($scope.circle.name === null || $scope.circle.name === "") {
@@ -183,6 +226,12 @@ controllers.controller('EditCircleController', function($scope, $location, $rout
             $scope.errorMessage = "Name is required. Please select name of circle.";
             return;
         }
+
+        var membersIds = [];
+        angular.forEach($scope.membersChanges, function(member) {
+          membersIds.push(member.id);
+        });
+        $scope.circle.members = membersIds;
 
         CircleService.update($scope.circle).success(function(data) {
             $scope.infoMessage = "Circle successfully created.";

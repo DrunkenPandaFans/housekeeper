@@ -16,9 +16,9 @@
     </div>
     <div class="panel-body">
       <ul class="list-unstyled">
-        <li ng-repeat="member in circle.members">
+        <li ng-repeat="member in membersChanges">
           {{ member.email }}
-          <a href="#" ng-click="removeMember(member)">
+          <a ng-click="removeMember(member)">
             <span class="glyphicon glyphicon-remove"></span>
           </a>
         </li>
@@ -32,4 +32,5 @@
       </div>
   </div>
   <button type="submit" class="btn btn-success" ng-click="submit()">Submit</button>
+  <a class="btn btn-warning" href="#/circles">Cancel</a>
 </form>
