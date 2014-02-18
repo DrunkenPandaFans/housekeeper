@@ -28,11 +28,11 @@ module Housekeeper
         
         content_type :json
 
-        return halt 401, "Only authenticated users have access to this resource!" if !user
+        halt 401, "Only authenticated users have access to this resource!" if !user
 
         session[:user] = user
       else
-        true
+        true 
       end
     end
 

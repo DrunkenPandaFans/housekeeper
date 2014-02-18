@@ -36,10 +36,10 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid" ng-controller="UserController">
         <div class="row">
             <nav id="userProfile" class="navbar navbar-inverse navbar-static-top" 
-                role="navigation" ng-controller="UserController" ng-cloak>
+                role="navigation" ng-cloak>
                 <div class="navbar-header">
                     <a href="#" class="navbar-brand">Housekeeper</a>
                 </div>
@@ -52,12 +52,11 @@
                       </li>
                       <li class="dropdown" ng-show="hasUserProfile" class="navbar-right navbar-text">                      
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            {{ userProfile.data.displayName }} <b class="caret"></b>
-                            <img class="image-rounded" ng-src="{{ userProfile.data.image }}" 
+                            {{ userProfile.displayName }} <b class="caret"></b>
+                            <img class="image-rounded" ng-src="{{ userProfile.image }}" 
                                 width="40" height="40"/>            
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Settings</a>
                             <li><a ng-click="disconnect()">Disconnect</a></li>                    
                         </ul>                       
                       </li>

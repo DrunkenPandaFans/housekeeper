@@ -2,9 +2,8 @@
 
 var controllers = angular.module("housekeeperControllers", []);
 
-controllers.controller('UserController', function ($scope, $window, ProfileService) {
-
-    $scope.test = $window.sessionStorage.token !== null;
+controllers.controller('UserController', 
+    function ($scope, $window, $location, ProfileService) {
 
     $scope.disconnect = function () {
         ProfileService.disconnect().then(function () {
@@ -12,9 +11,11 @@ controllers.controller('UserController', function ($scope, $window, ProfileServi
             $scope.hasUserProfile = false;
             $scope.isSignedIn = false;
             $scope.immediateFailed = true;
-        });
 
-        delete $window.sessionStorage.token;
+            delete $window.sessionStorage.token;
+
+            $location.path('/');
+        });
     };
 
     $scope.signedIn = function (profile) {
@@ -25,6 +26,8 @@ controllers.controller('UserController', function ($scope, $window, ProfileServi
 
         // Save user access token to session
         $window.sessionStorage.token = profile.token
+        // Redirect to circles
+        $location.path('/circles')
     };
 
     $scope.signIn = function (authData) {
@@ -42,7 +45,7 @@ controllers.controller('UserController', function ($scope, $window, ProfileServi
         if (authResults["access_token"]) {
             // authorize on server and create session
             ProfileService.connect(authResults).then(function (profile) {
-                $scope.signedIn(profile);
+                $scope.signedIn(profile.data);
             });
         } else if (authResults["error"] === 'immediate_failed') {
             $scope.immediateFailed = true;
@@ -73,7 +76,14 @@ controllers.controller('UserController', function ($scope, $window, ProfileServi
     init();
 });
 
-controllers.controller('CirclesListController', function ($scope, $window, CircleService) {    
+controllers.controller('CirclesListController', 
+    function ($scope, $window, $location, CircleService) {    
+
+    // check if user is logged in
+    if ($window.sessionStorage.token === null) {
+      $location.path('/');
+      return;
+    }
 
     CircleService.all().success(function(data) {
         $scope.circles = data["circles"];
@@ -101,7 +111,13 @@ controllers.controller('CirclesListController', function ($scope, $window, Circl
     
 });
 
-controllers.controller('AddCircleController', function($scope, $location, $window, CircleService, UserService) {
+controllers.controller('AddCircleController', 
+    function($scope, $location, $window, CircleService, UserService) {
+
+    if ($window.sessionStorage.token === null) {
+      $location.path('/');
+      return;
+    }
    
     UserService.all().success(function (data) {
         $scope.users = data;
@@ -166,7 +182,7 @@ controllers.controller('AddCircleController', function($scope, $location, $windo
 
         CircleService.create(circleData).success(function() {
             $scope.infoMessage = "Circle successfully created."
-            $location.path("/circle");
+            $location.path("/circles");
         }).error(function(error) {
             $scope.errorMessage = error.body;
         })
@@ -174,7 +190,12 @@ controllers.controller('AddCircleController', function($scope, $location, $windo
 });
 
 controllers.controller('EditCircleController', 
-    function($scope, $location, $routeParams, $q, CircleService, UserService) {
+    function($scope, $location, $window, $routeParams, $q, CircleService, UserService) {
+
+    if ($window.sessionStorage.token == null) {
+      $location.path('/');
+      return;
+    }
    
     $q.all([CircleService.find($routeParams.circleId), UserService.all()])
     .then(function (resources) {
@@ -235,7 +256,7 @@ controllers.controller('EditCircleController',
 
         CircleService.update($scope.circle).success(function(data) {
             $scope.infoMessage = "Circle successfully created.";
-            $location.path("/circle");
+            $location.path("/circles");
         }).error(function(error) {
             $scope.errorMessage = error.body;
         })

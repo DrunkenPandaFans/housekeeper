@@ -16,7 +16,10 @@ app.config(['$routeProvider',
             templateUrl: "partials/circles-form.html",
             controller: "EditCircleController"
         })
+        .when("/", {
+            templateUrl: "partials/intro.html",
+        })
         .otherwise({
-            redirectTo: '/circles'
+            redirectTo: '/'
         })
 }]);
