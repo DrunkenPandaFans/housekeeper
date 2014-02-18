@@ -89,9 +89,7 @@ module Housekeeper
         circle.id = d["_id"].to_s
         circle
       end
-    end
-
-    private
+    end    
 
     def self.transform(data)
       circle = Circle.new data["name"], data["description"], data["moderator"]
@@ -104,6 +102,8 @@ module Housekeeper
       end
       circle
     end
+
+    private
 
     def convert_shopping_lists
       return [] if @shopping_lists.nil?

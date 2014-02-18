@@ -38,15 +38,15 @@ module Housekeeper
     end
 
     post "/circle" do
-      data = JSON.parse(request.body)
+      data = JSON.parse(request.body.read)
 
       errors = []
-      if !data.name || data.name.blank?
+      if !data["name"] || data["name"].strip.empty?
         errors << "Circle is missing name"
       end
 
 
-      if errors
+      if !errors.empty?
         return halt 400, errors.to_json
       end
 
@@ -56,13 +56,32 @@ module Housekeeper
       description = data["description"]
       description = "" unless description
 
-      circle = Housekeeper::Circle data["name"], description, moderator      
+      circle = Housekeeper::Circle.new data["name"], description, moderator
+
+      if data["users"]
+        members = data["members"].map do |user_id|
+          Housekeeper::User.find(user_id)
+        end
+        circle.members = members
+      end      
 
       circle.save
+      
+      status 201
     end
 
     put "/circle/:id" do
       # update circle
+      id = params[:id]
+
+      data = JSON.parse(request.body.read)
+
+      updated = Housekeeper::Circle.transform(data)
+      updated.id = id
+      
+      updated.update
+
+      status 201
     end
 
     delete "/circle/:id" do
