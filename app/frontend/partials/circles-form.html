@@ -19,7 +19,7 @@
       <ul class="list-unstyled">
         <li ng-repeat="member in membersChanges">
           {{ member.email }}
-          <a ng-click="removeMember(member)">
+          <a ng-click="removeMember(member)" ng-show="isModerator()">
             <span class="glyphicon glyphicon-remove"></span>
           </a>
         </li>

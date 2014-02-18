@@ -211,6 +211,11 @@ controllers.controller('EditCircleController',
       "email": ""
     };
 
+    $scope.isModerator = function() {
+        var userId = $window.sessionStorage.token;
+        return userId === $scope.circle.moderator;
+    }
+
     $scope.addMember = function() {      
       var member = angular.copy($scope.newMember);
       if ($scope.membersChanges.indexOf(member) == -1) {
