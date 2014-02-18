@@ -21,10 +21,10 @@ module Housekeeper
       begin
         circle =  Housekeeper::Circle.find(id)      
       rescue BSON::InvalidObjectId
-        return halt 401, "Circle with id #{id} does not exist."
+        return halt 404, "Circle with id #{id} does not exist."
       end
 
-      return halt 401, "Circle with id #{id} does not exist" unless circle
+      return halt 404, "Circle with id #{id} does not exist" unless circle
 
       user = session[:user]
       
@@ -44,7 +44,6 @@ module Housekeeper
       if !data["name"] || data["name"].strip.empty?
         errors << "Circle is missing name"
       end
-
 
       if !errors.empty?
         return halt 400, errors.to_json
@@ -73,6 +72,16 @@ module Housekeeper
     put "/circle/:id" do
       # update circle
       id = params[:id]
+      user = session[:user]
+
+      original = Housekeeper::Circle.find(id)
+      if !original
+        return 404, "Circle does not exists."
+      end
+
+      if original.moderator != user.id
+        return halt 403, "User does not have permission to update circle."
+      end
 
       data = JSON.parse(request.body.read)
 
@@ -90,11 +99,11 @@ module Housekeeper
       begin
         circle = Housekeeper::Circle.find(circle_id)
       rescue BSON::InvalidObjectId
-        return halt 401, "Circle with id #{circle_id} does not exists."
+        return halt 404, "Circle with id #{circle_id} does not exists."
       end
 
       if !circle 
-        return halt 401, "Circle with id #{circle_id} does not exists."
+        return halt 404, "Circle with id #{circle_id} does not exists."
       end
 
       user_id = session[:user].id

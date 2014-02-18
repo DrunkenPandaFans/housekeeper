@@ -49,9 +49,9 @@ describe Housekeeper::Circles do
     expected.has_next?.must_equal true
   end
 
-  it "should return 401 if circle with given id does not exists" do
+  it "should return 404 if circle with given id does not exists" do
     delete "/circle/nonexistingid", {}, {'rack.session' => {:user => @user}}
-    last_response.status.must_equal 401
+    last_response.status.must_equal 404
   end
 
   it "should return circle for existing id and if user is circle moderator" do
@@ -74,7 +74,7 @@ describe Housekeeper::Circles do
 
   it "should return 401 if circle with id does not exist" do
     get "/circle/someweirdid", {}, {'rack.session' => {:user => @user}}
-    last_response.status.must_equal 401
+    last_response.status.must_equal 404
   end
 
   it "should return 201 and list of users circles" do
