@@ -101,7 +101,14 @@ controllers.controller('CirclesListController', function ($scope, $window, Circl
     
 });
 
-controllers.controller('AddCircleController', function($scope, $location, $window, CircleService) {
+controllers.controller('AddCircleController', function($scope, $location, $window, CircleService, UserService) {
+   
+    UserService.all().success(function (data) {
+        $scope.users = data;
+    }).error(function(error) {
+        $scope.errorMessage = error;
+    });
+
     $scope.hasError = function() {
         $scope.errorMessage !== null && $scope.errorMessage !== "";
     }    
@@ -117,26 +124,44 @@ controllers.controller('AddCircleController', function($scope, $location, $windo
         "email": ""
     };
 
-    $scope.addedMembers = [];
-
-    $scope.addUser = function() {
+    $scope.addMember = function() {
          var id = $scope.newMember.id
          if (id !== null && id !== "") {
-             $scope.circle.members.push($scope.members);
-             $scope.addedMembers = $scope.newMember;
+             var copy = angular.copy($scope.newMember);
+             $scope.circle.members.push(copy);
              $scope.newMember.id = "";
              $scope.newMember.email = "";
          }
-     }
+     };
+
+    $scope.removeMember = function(member) {
+      var members = $scope.circle.members;
+      for (var i = 0; i < members.length; i++) {
+        if (members[i] == member) {
+          members.splice(i, 1);
+        }
+      }
+    }
 
     $scope.submit = function() {
         if ($scope.circle.name === null || $scope.circle.name === "") {
             // show error
             $scope.errorMessage = "Name is required. Please select name of circle.";
             return;
-        }        
+        }
 
-        CircleService.create($scope.circle).success(function() {
+        var membersIds = [];
+        angular.forEach($scope.circle.members, function(member) {
+          membersIds.push(member.id);
+        });
+
+        var circleData = {
+          "name": $scope.circle.name,
+          "description": $scope.circle.description,
+          "members": $scope.circle.membersIds
+        }
+
+        CircleService.create(circleData).success(function() {
             $scope.infoMessage = "Circle successfully created."
             $location.path("/circle");
         }).error(function(error) {

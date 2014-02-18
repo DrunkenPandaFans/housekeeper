@@ -21,11 +21,11 @@ services.factory("UserService", function ($http) {
     var userService = {};
 
     userService.all = function() {
-        return $http.get("/users");
+        return $http.get("/user");
     };
 
     userService.findByEmail = function(email) {
-        return $http.get("/users/" + email);
+        return $http.get("/user/" + email);
     };
     return userService;
 });

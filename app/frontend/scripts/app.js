@@ -1,4 +1,6 @@
-app = angular.module("housekeeperApp", ["ngRoute", "housekeeperServices", "housekeeperControllers"]);
+app = angular.module("housekeeperApp", 
+    ["ngRoute", "ui.bootstrap", "housekeeperServices", 
+     "housekeeperControllers"]);
 
 app.config(['$routeProvider', 
     function($routeProvider) {
