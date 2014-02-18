@@ -3,13 +3,14 @@ module Housekeeper
 
     get "/circle" do
       user = session[:user]
+      halt 401 if !user
       user_id = user.id
 
       moderated = Housekeeper::Circle.find_by_moderator(user_id)
       circles = transform_circles(moderated, true)
 
       member = Housekeeper::Circle.find_by_member(user_id)
-      circles << transform_circles(member, false)
+      circles.concat(transform_circles(member, false))
 
       status 201
       {"circles" => circles}.to_json
