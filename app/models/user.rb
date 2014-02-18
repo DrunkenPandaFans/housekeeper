@@ -29,6 +29,14 @@ module Housekeeper
       @default_group = ''
     end
 
+    def to_hash
+      {"id" => @id,
+       "email" => @email,
+       "google_token" => @google_token.to_hash,
+       "send_sms" => @send_sms,
+       "default_group" => @default_group}
+    end
+
     # Public: Returns all users
     #
     # Returns all users.
