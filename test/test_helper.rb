@@ -1,3 +1,4 @@
+# Setup Rack for Sinatra testing
 ENV['RACK_ENV'] = 'test'
 
 require 'simplecov'
@@ -8,6 +9,7 @@ require 'minitest/autorun'
 require 'minitest/spec'
 require 'rack/test'
 require 'mocha/setup'
+
 
 # Start test coverage
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[

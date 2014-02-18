@@ -58,8 +58,17 @@ module Housekeeper
 
     post '/disconnect' do      
       halt 401, "User was not logged in" unless session[:user]               
-      session.delete(:user)      
-      status 201      
+
+      token = session[:user].google_token.refresh_token
+      token = session[:user].google_token.access_token unless token
+
+      session.delete(:user)
+
+      revokePath = "https://accounts.google.com/o/oauth2/revoke?token=" + token
+      uri = URI.parse(revokePath)
+      request = Net::HTTP.new(uri.host, uri.port)
+      request.use_ssl = true
+      status request.get(uri.request_uri).code      
     end
 
     # Public: Loads user's profile data for given token.

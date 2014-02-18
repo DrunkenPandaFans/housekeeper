@@ -1,0 +1,52 @@
+<div ng-show="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+<div ng-show="infoMessage" class="alert alert-info">{{ infoMessage }}</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3>{{ circle.name }} Detail</h3>
+  </div>
+  <div class="panel-body">  
+    <p>{{ circle.description}}</p>  
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Members</div>
+  <div class="panel-body">
+    <ul class="list-unstyled">
+      <li ng-repeat="member in members">{{ member.email }}</li>
+    </ul>
+  </div>
+</div>
+<div class="action-bar panel panel-default">
+  <a href="#/circles/{{ circle.id}}/shopping-list/add" class="btn btn-primary">New Shopping List</a>
+  <a href="#/circles/edit/{{ circle.id }}" class="btn btn-primary">Edit</a>
+  <a ng-click="removeCircle(circle)" class="btn btn-danger">Remove</a>
+  <a href="#/circles" class="btn btn-warning">Back</a>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Shopping lists</div>  
+  <div class="panel-body" ng-show="circle.shopping_lists">
+    <table class="table table-striped">
+      <thead>
+        <tr>        
+          <th>Shop</th>
+          <th>Date</th>
+          <th></th> 
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="list in circle.shopping_lists">
+          <td>{{ list.shop }}</td>
+          <td>{{ list.date }}</td>
+          <td>
+            <a href="#/circles/{{ circle.id }}/shopping-list/{{ prepareShoppingListId(list) }}">Edit</a>
+            <a ng-show="isModerator()" ng-click="removeShoppingList(list)">Remove</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel-body" ng-hide="circle.shopping_lists">
+    <p>This circle doesn't have any shopping lists.</p>
+    <p>If you are ready to for some serious shopping, just click on New Shopping Lists.</p>
+  </div>
+</div>

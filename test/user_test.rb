@@ -17,7 +17,7 @@ describe Housekeeper::User do
       Housekeeper::User.new "octo@github.com", token      
     end
     
-    it "calls insert on 'users' collection" do            
+    it "saves user to database" do
       saved = subject.save
       expected = @db.find({"_id" => BSON::ObjectId.from_string(saved.id)}).first
 
