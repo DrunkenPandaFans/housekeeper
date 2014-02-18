@@ -14,7 +14,9 @@ controllers.controller('UserController',
 
             delete $window.sessionStorage.token;
 
-            $location.path('/');
+            if ($location.path() !== '/') {
+                $location.path('/');
+            }
         });
     };
 
@@ -26,8 +28,10 @@ controllers.controller('UserController',
 
         // Save user access token to session
         $window.sessionStorage.token = profile.token
-        // Redirect to circles
-        $location.path('/circles')
+
+        if ($location.path() === '/') {
+            $location.path('/circles');
+        }
     };
 
     $scope.signIn = function (authData) {
@@ -77,13 +81,7 @@ controllers.controller('UserController',
 });
 
 controllers.controller('CirclesListController', 
-    function ($scope, $window, $location, CircleService) {    
-
-    // check if user is logged in
-    if ($window.sessionStorage.token === null) {
-      $location.path('/');
-      return;
-    }
+    function ($scope, $window, $location, CircleService) {        
 
     CircleService.all().success(function(data) {
         $scope.circles = data["circles"];
@@ -95,6 +93,7 @@ controllers.controller('CirclesListController',
     });
 
     $scope.removeCircle = function(circle) {
+        $scope.errorMessage = null;
         if (!circle.is_moderator) {
             $scope.errorMessage = "You are not moderator of this circle, so you can't remove it.";
             return;
@@ -112,12 +111,7 @@ controllers.controller('CirclesListController',
 });
 
 controllers.controller('AddCircleController', 
-    function($scope, $location, $window, CircleService, UserService) {
-
-    if ($window.sessionStorage.token === null) {
-      $location.path('/');
-      return;
-    }
+    function($scope, $location, $window, CircleService, UserService) {    
    
     UserService.all().success(function (data) {
         $scope.users = data;
@@ -163,6 +157,7 @@ controllers.controller('AddCircleController',
     }
 
     $scope.submit = function() {
+        $scope.errorMessage = null;
         if ($scope.circle.name === null || $scope.circle.name === "") {
             // show error
             $scope.errorMessage = "Name is required. Please select name of circle.";
@@ -190,12 +185,7 @@ controllers.controller('AddCircleController',
 });
 
 controllers.controller('EditCircleController', 
-    function($scope, $location, $window, $routeParams, $q, CircleService, UserService) {
-
-    if ($window.sessionStorage.token == null) {
-      $location.path('/');
-      return;
-    }
+    function($scope, $location, $window, $routeParams, $q, CircleService, UserService) {    
    
     $q.all([CircleService.find($routeParams.circleId), UserService.all()])
     .then(function (resources) {
@@ -221,7 +211,7 @@ controllers.controller('EditCircleController',
       "email": ""
     };
 
-    $scope.addMember = function() {
+    $scope.addMember = function() {      
       var member = angular.copy($scope.newMember);
       if ($scope.membersChanges.indexOf(member) == -1) {
           $scope.membersChanges.push(member);
@@ -242,6 +232,7 @@ controllers.controller('EditCircleController',
     }
 
     $scope.submit = function() {
+        $scope.errorMessage = null;
         if ($scope.circle.name === null || $scope.circle.name === "") {
             // show error
             $scope.errorMessage = "Name is required. Please select name of circle.";
@@ -261,4 +252,135 @@ controllers.controller('EditCircleController',
             $scope.errorMessage = error.body;
         })
     }
+});
+
+controllers.controller("CircleDetailController", 
+    function($scope, $routeParams, CircleService, UserService) {       
+
+    var circleId = $routeParams.circleId;
+
+    CircleService.find(circleId).success(function(data, status) {
+        $scope.circle = data;
+
+        $scope.members = [];
+        angular.forEach($scope.circle.members, function (userId) {
+            UserService.find(userId).success(function(userData, status) {
+                $scope.members.push(userData);
+            }).error(function(error) {
+                $scope.errorMessage = error;
+            });
+        });
+        angular.forEach($scope.circle.shopping_lists, function(list) {
+            var dateString = list.date;
+            var date = new Date(dateString);
+            list.date = date.getDate() + "." + (date.getMonth() + 1)+ "." + date.getFullYear();
+        })
+    }).error(function(error) {
+        $scope.errorMessage = error;
+    });
+
+    $scope.removeCircle = function(circle) {
+        $scope.errorMessage = null;
+        if (!circle.is_moderator) {
+            $scope.errorMessage = "You are not moderator of this circle, so you can't remove it.";
+            return;
+        }
+
+        CircleService.remove(circle.id).success(function() {
+            $scope.infoMessage = "Circle was successfully removed.";
+        }).error(function(error) {
+            $scope.errorMessage = error;
+        })
+    };
+});
+
+controllers.controller("AddShoppingListController", 
+    function($scope, $routeParams, $window, $location, CircleService) {
+
+    $scope.circleId= $routeParams.circleId;    
+
+    $scope.newShoppingList = {
+        "date": "",
+        "shop": "",
+        "items": []
+    };
+
+    $scope.newShoppingItem = {
+        "amount": 1,
+        "name": "",
+        "requestor": $window.sessionStorage.token
+    }
+
+    $scope.submit = function() {
+        $scope.errorMessage = null;
+        // validation goes here!!
+        var newShoppingList = $scope.newShoppingList;
+        if (newShoppingList.shop == null || newShoppingList.shop == "") {
+            $scope.errorMessage = "Please, provide name of the shop";
+            return;
+        }
+
+        if (newShoppingList.date == null || newShoppingList.date == "") {
+            $scope.errorMessage = "Please provide shopping date in format: dd.MM.yyyy";
+            return;
+        }
+        var datePattern = /\d{1,2}\.\d{1,2}\.\d{4}/
+        if (!newShoppingList.date.match(datePattern)) {
+            $scope.errorMessage = "Invalid format date. Please provide shopping date in format: dd.MM.yyyy.";
+            return;
+        }
+
+        var millis = Date.parse(newShoppingList.date);
+        if (isNaN(millis)) {
+            $scope.errorMessage = "Invalid format date. Please provide shopping date in format: dd.MM.yyyy.";
+            return;
+        }
+
+        $scope.newShoppingList.date = new Date(millis).toISOString();        
+        
+        CircleService.find($scope.circleId).success(function(data) {
+            var circle = data;
+
+            if (circle == null || $scope.errorMessage != null) {
+                return;
+            }
+
+            if (circle.shopping_lists === null || circle.shopping_lists === 'undefined') {
+                circle.shopping_lists = [];
+            }
+            circle.shopping_lists.push($scope.newShoppingList);
+
+            CircleService.update(circle).success(function(data, status) {
+                $scope.infoMessage = "Shopping list was successfully added";
+                $location.path("/circles/" + $scope.circleId);
+            }).error(function(error) {
+                $scope.errorMessage = "It was not possible create new shopping list. " + error;
+            })
+        }).error(function(error) {
+            $scope.errorMessage = error;
+        });
+    };
+
+    // add and remove shopping items to model
+    $scope.addShoppingItem = function() {
+        if ($scope.newShoppingItem.name == null || $scope.newShoppingItem === "") {
+            $scope.errorMessage = "Shopping item name is required. Please, provide name.";
+            return;
+        }
+
+        var copy = angular.copy($scope.newShoppingItem);
+        $scope.newShoppingList.items.push(copy);
+        $scope.newShoppingItem.name = "";
+        $scope.newShoppingItem.amount = 1;
+    };
+
+    $scope.removeShoppingItem = function(item) {
+        var shoppingItems = $scope.newShoppingList.items;
+        for (var i = 0; i < shoppingItems.length; i++) {
+            if (shoppingItems[i] == item) {
+                shoppingItems.splice(i, 1);
+            }
+        }
+    }
+
 });

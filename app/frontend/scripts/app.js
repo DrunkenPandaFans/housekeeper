@@ -16,6 +16,14 @@ app.config(['$routeProvider',
             templateUrl: "partials/circles-form.html",
             controller: "EditCircleController"
         })
+        .when("/circles/:circleId/", {
+            templateUrl: "partials/circle-detail.html",
+            controller: "CircleDetailController"
+        })
+        .when("/circles/:circleId/shopping-list/add", {
+            templateUrl: "partials/shopping-list-form.html",
+            controller: "AddShoppingListController"
+        })
         .when("/", {
             templateUrl: "partials/intro.html",
         })
@@ -23,3 +31,13 @@ app.config(['$routeProvider',
             redirectTo: '/'
         })
 }]);
+
+app.run(function($rootScope, $location, $window) {
+    $rootScope.$on('$routeChangeStart', function(event, next, current) {
+        if ($window.sessionStorage.token == null) {
+            if (next.templateUrl !== 'partials/intro.html') {
+                $location.path('/');
+            }
+        }
+    });    
+});

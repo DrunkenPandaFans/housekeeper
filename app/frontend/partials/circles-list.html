@@ -16,7 +16,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="circle in circles">
-        <td>{{ circle.name }}</td>
+        <td><a href="#/circles/{{ circle.id }}">{{ circle.name }}</td>
         <td>{{ circle.description }}</td>
         <td>
           <span class="glyphicon glyphicon-ok" ng-show="circle.is_moderator"></span>

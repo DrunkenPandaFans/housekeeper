@@ -24,8 +24,8 @@ services.factory("UserService", function ($http) {
         return $http.get("/user");
     };
 
-    userService.findByEmail = function(email) {
-        return $http.get("/user/" + email);
+    userService.find = function(userId) {
+        return $http.get("/user/" + userId);
     };
     return userService;
 });
@@ -57,7 +57,7 @@ services.factory("CircleService", function ($http) {
     
 });
 
-services.factory("authInterceptor", function($rootScope, $q, $window) {
+services.factory("authInterceptor", function($q, $window, $location) {
     return {
         request: function(config) {
             config.headers = config.headers || {};
@@ -69,7 +69,7 @@ services.factory("authInterceptor", function($rootScope, $q, $window) {
 
         response: function(response) {
             if (response.status === 401) {
-                // show user login necessary message
+                $location.path('/');
             }
 
             return response || $q.when(response);
