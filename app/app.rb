@@ -1,10 +1,14 @@
 require 'api/profile'
+require 'api/circles'
+require 'api/users'
 
 module Housekeeper
   class App < Sinatra::Base
 
     # Load parts of API
     use Profile
+    use Circles
+    use Users
 
     # Enable sessions and set session secret.
     # So that in development mode sessions are not invalidated
