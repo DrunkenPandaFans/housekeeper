@@ -58,7 +58,7 @@ module Housekeeper
 
       circle = Housekeeper::Circle.new data["name"], description, moderator
 
-      if data["users"]
+      if data["members"]
         members = data["members"].map do |user_id|
           Housekeeper::User.find(user_id)
         end
