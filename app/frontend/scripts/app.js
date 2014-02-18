@@ -24,6 +24,10 @@ app.config(['$routeProvider',
             templateUrl: "partials/shopping-list-form.html",
             controller: "AddShoppingListController"
         })
+        .when("/circles/:circleId/shopping-list/:shoppingListId", {
+            templateUrl: "partials/shopping-list-form.html",
+            controller: "EditShoppingListController"
+        })
         .when("/", {
             templateUrl: "partials/intro.html",
         })

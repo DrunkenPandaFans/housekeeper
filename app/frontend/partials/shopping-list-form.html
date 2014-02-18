@@ -1,13 +1,14 @@
 <div ng-show="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+<h2>Manage Shopping List</h2>
 <form novalidate>
   <div class="form-group">
     <label for="date">Shopping Date</label>
-    <input type="text" class="form-control" ng-model="newShoppingList.date" 
+    <input type="text" class="form-control" ng-model="shoppingList.date" 
       placeholder="dd.MM.yyyy" id="date" />
   </div>
   <div class="form-group">
     <label for="shop">Shop</label>
-    <input type="text" class="form-control" ng-model="newShoppingList.shop"
+    <input type="text" class="form-control" ng-model="shoppingList.shop"
       id="shop" />
   </div>
   <div class="panel panel-default">
@@ -16,7 +17,7 @@
     </div>
     <div class="panel-body">
       <ul class="list-unstyled">
-        <li ng-repeat="item in newShoppingList.items">
+        <li ng-repeat="item in shoppingList.items">
           {{ item.amount }}x <span><strong>{{ item.name }}</strong></span>
           <a ng-click="removeShoppingItem(item)">
             <span class="glyphicon glyphicon-remove"></span>
@@ -37,5 +38,5 @@
     </div>
   </div>  
   <button type="submit" class="btn btn-success" ng-click="submit()">Submit</button>
-  <a class="btn btn-warning" href="#/circles/${circleId}">Cancel</a>
+  <a class="btn btn-warning" href="#/circles/{{ circleId }}">Cancel</a>
 </form>

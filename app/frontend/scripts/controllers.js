@@ -255,7 +255,7 @@ controllers.controller('EditCircleController',
 });
 
 controllers.controller("CircleDetailController", 
-    function($scope, $routeParams, CircleService, UserService) {       
+    function($scope, $routeParams, $window, CircleService, UserService) {       
 
     var circleId = $routeParams.circleId;
 
@@ -279,6 +279,11 @@ controllers.controller("CircleDetailController",
         $scope.errorMessage = error;
     });
 
+    $scope.isModerator = function() {
+        var userId = $window.sessionStorage.token;
+        return userId === $scope.circle.moderator;
+    }
+
     $scope.removeCircle = function(circle) {
         $scope.errorMessage = null;
         if (!circle.is_moderator) {
@@ -292,6 +297,27 @@ controllers.controller("CircleDetailController",
             $scope.errorMessage = error;
         })
     };
+
+    $scope.removeShoppingList = function(list) {
+         var circleLists = $scope.circle.shopping_lists;
+         for (var i = 0; i < circleLists.length; i++) {
+             if (circleLists[i] == list) {
+                 circleLists.splice(i, 1);
+             }
+         }
+
+         CircleService.update($scope.circle).success(function(data) {
+             $scope.infoMessage = "Shopping list was successfully removed";
+         }).error(function(error) {
+             $scope.errorMessage = "Shopping list could not been removed. " + error ;
+             circleLists.push(list);
+         });
+    };
+
+    $scope.prepareShoppingListId = function(list) {        
+        var date = new Date(list.date);
+        return date.toISOString();
+    };
 });
 
 controllers.controller("AddShoppingListController", 
@@ -299,7 +325,7 @@ controllers.controller("AddShoppingListController",
 
     $scope.circleId= $routeParams.circleId;    
 
-    $scope.newShoppingList = {
+    $scope.shoppingList = {
         "date": "",
         "shop": "",
         "items": []
@@ -309,12 +335,12 @@ controllers.controller("AddShoppingListController",
         "amount": 1,
         "name": "",
         "requestor": $window.sessionStorage.token
-    }
+    }    
 
     $scope.submit = function() {
         $scope.errorMessage = null;
         // validation goes here!!
-        var newShoppingList = $scope.newShoppingList;
+        var newShoppingList = $scope.shoppingList;
         if (newShoppingList.shop == null || newShoppingList.shop == "") {
             $scope.errorMessage = "Please, provide name of the shop";
             return;
@@ -336,7 +362,7 @@ controllers.controller("AddShoppingListController",
             return;
         }
 
-        $scope.newShoppingList.date = new Date(millis).toISOString();        
+        $scope.shoppingList.date = new Date(millis).toISOString();        
         
         CircleService.find($scope.circleId).success(function(data) {
             var circle = data;
@@ -348,7 +374,7 @@ controllers.controller("AddShoppingListController",
             if (circle.shopping_lists === null || circle.shopping_lists === 'undefined') {
                 circle.shopping_lists = [];
             }
-            circle.shopping_lists.push($scope.newShoppingList);
+            circle.shopping_lists.push($scope.shoppingList);
 
             CircleService.update(circle).success(function(data, status) {
                 $scope.infoMessage = "Shopping list was successfully added";
@@ -369,18 +395,109 @@ controllers.controller("AddShoppingListController",
         }
 
         var copy = angular.copy($scope.newShoppingItem);
-        $scope.newShoppingList.items.push(copy);
+        $scope.shoppingList.items.push(copy);
         $scope.newShoppingItem.name = "";
         $scope.newShoppingItem.amount = 1;
     };
 
     $scope.removeShoppingItem = function(item) {
-        var shoppingItems = $scope.newShoppingList.items;
+        var shoppingItems = $scope.shoppingList.items;
         for (var i = 0; i < shoppingItems.length; i++) {
             if (shoppingItems[i] == item) {
                 shoppingItems.splice(i, 1);
             }
         }
+    };
+
+});
+
+controllers.controller("EditShoppingListController", 
+    function($scope, $routeParams, $location, $window, CircleService) {
+
+    $scope.circleId = $routeParams.circleId;
+
+    $scope.shoppingListId = $routeParams.shoppingListId;    
+
+    CircleService.find($scope.circleId).success(function (data) {
+        $scope.circle = data;       
+        angular.forEach($scope.circle.shopping_lists, function (list) {            
+            var listDate = new Date(list.date).toISOString();
+            var shoppingListIdDate = new Date($scope.shoppingListId).toISOString();
+            if (listDate === shoppingListIdDate) {
+                $scope.shoppingList = list;
+            }
+            
+            list.date = listDate.getDate() + "." + (listDate.getMonth() + 1) + "." + listDate.getFullYear();
+        });
+        if ($scope.shoppingList == null || $scope.shoppingList == "undefined") {
+            $location.path("/circles/" + $scope.circleId);
+            $scope.infoMessage = "Shopping list does not exists for this circle.";
+        }
+    }).error(function(error) {
+        $scope.errorMessage = error;
+    });
+
+    $scope.newShoppingItem = {
+        "amount": 1,
+        "name": "",
+        "requestor": $window.sessionStorage.token
     }
+
+    $scope.submit = function() {
+        $scope.errorMessage = null;
+        // validation goes here!!
+        var shoppingList = $scope.shoppingList;
+        if (shoppingList.shop == null || shoppingList.shop == "") {
+            $scope.errorMessage = "Please, provide name of the shop";
+            return;
+        }
+
+        if (shoppingList.date == null || shoppingList.date == "") {
+            $scope.errorMessage = "Please provide shopping date in format: dd.MM.yyyy";
+            return;
+        }
+        var datePattern = /\d{1,2}\.\d{1,2}\.\d{4}/
+        if (!shoppingList.date.match(datePattern)) {
+            $scope.errorMessage = "Invalid format date. Please provide shopping date in format: dd.MM.yyyy.";
+            return;
+        }
+
+        var millis = Date.parse(shoppingList.date);
+        if (isNaN(millis)) {
+            $scope.errorMessage = "Invalid format date. Please provide shopping date in format: dd.MM.yyyy.";
+            return;
+        }
+
+        $scope.shoppingList.date = new Date(millis).toISOString();
+
+        CircleService.update($scope.circle).success(function(data, status) {
+            $scope.infoMessage = "Shopping list was successfully added";
+            $location.path("/circles/" + $scope.circleId);
+        }).error(function(error) {
+            $scope.errorMessage = "It was not possible create new shopping list. " + error;
+        });                
+    };
+
+    // add and remove shopping items to model
+    $scope.addShoppingItem = function() {
+        if ($scope.newShoppingItem.name == null || $scope.newShoppingItem === "") {
+            $scope.errorMessage = "Shopping item name is required. Please, provide name.";
+            return;
+        }
+
+        var copy = angular.copy($scope.newShoppingItem);
+        $scope.shoppingList.items.push(copy);
+        $scope.newShoppingItem.name = "";
+        $scope.newShoppingItem.amount = 1;
+    };
+
+    $scope.removeShoppingItem = function(item) {
+        var shoppingItems = $scope.shoppingList.items;
+        for (var i = 0; i < shoppingItems.length; i++) {
+            if (shoppingItems[i] == item) {
+                shoppingItems.splice(i, 1);
+            }
+        }
+    };
 
 });
