@@ -10,6 +10,9 @@ module Housekeeper
       circles = transform_circles(moderated, true)
 
       member = Housekeeper::Circle.find_by_member(user_id)
+      member.select! do |circle|
+        circle.moderator != user_id
+      end
       circles.concat(transform_circles(member, false))
 
       status 201
