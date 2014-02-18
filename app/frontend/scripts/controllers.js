@@ -4,6 +4,8 @@ var controllers = angular.module("housekeeperControllers", []);
 
 controllers.controller('UserController', function ($scope, $window, ProfileService) {
 
+    $scope.test = $window.sessionStorage.token !== null;
+
     $scope.disconnect = function () {
         ProfileService.disconnect().then(function () {
             $scope.userProfile = {};
@@ -11,6 +13,8 @@ controllers.controller('UserController', function ($scope, $window, ProfileServi
             $scope.isSignedIn = false;
             $scope.immediateFailed = true;
         });
+
+        delete $window.sessionStorage.token;
     };
 
     $scope.signedIn = function (profile) {
@@ -67,4 +71,99 @@ controllers.controller('UserController', function ($scope, $window, ProfileServi
     };
 
     init();
+});
+
+controllers.controller('CirclesListController', function ($scope, $window, CircleService) {    
+
+    CircleService.all().success(function(data) {
+        $scope.circles = data["circles"];
+        $scope.hasCircles = $scope.circles.length > 0;        
+    }).error(function(error) {
+        $scope.error = error.body;
+        $scope.circles = [];
+        $scope.hasCircles = false;
+    });
+
+    $scope.removeCircle = function(circle) {
+        if (!circle.is_moderator) {
+            $scope.errorMessage = "You are not moderator of this circle, so you can't remove it.";
+            return;
+        }
+
+        CircleService.remove(circle.id).success(function() {
+            $scope.infoMessage = "Circle was successfully removed.";
+        }).error(function(error) {
+            $scope.errorMessage = error;
+        })
+    }
+
+    $scope.isLoggedIn = ($window.sessionStorage.token !== null);      
+    
+});
+
+controllers.controller('AddCircleController', function($scope, $location, $window, CircleService) {
+    $scope.hasError = function() {
+        $scope.errorMessage !== null && $scope.errorMessage !== "";
+    }    
+
+    $scope.circle = {
+        "name": "",
+        "description": "", 
+        "members": []
+    };
+
+    $scope.newMember = {
+        "id": "",
+        "email": ""
+    };
+
+    $scope.addedMembers = [];
+
+    $scope.addUser = function() {
+         var id = $scope.newMember.id
+         if (id !== null && id !== "") {
+             $scope.circle.members.push($scope.members);
+             $scope.addedMembers = $scope.newMember;
+             $scope.newMember.id = "";
+             $scope.newMember.email = "";
+         }
+     }
+
+    $scope.submit = function() {
+        if ($scope.circle.name === null || $scope.circle.name === "") {
+            // show error
+            $scope.errorMessage = "Name is required. Please select name of circle.";
+            return;
+        }        
+
+        CircleService.create($scope.circle).success(function() {
+            $scope.infoMessage = "Circle successfully created."
+            $location.path("/circle");
+        }).error(function(error) {
+            $scope.errorMessage = error.body;
+        })
+    }
+});
+
+controllers.controller('EditCircleController', function($scope, $location, $routeParams, CircleService) {
+    CircleService.find($routeParams.circleId).success(function(data) {
+        $scope.circle = data;        
+    }).error(function(error) {
+        $scope.errorMessage = error.body;
+    });
+
+    $scope.submit = function() {
+        if ($scope.circle.name === null || $scope.circle.name === "") {
+            // show error
+            $scope.errorMessage = "Name is required. Please select name of circle.";
+            return;
+        }
+
+        CircleService.update($scope.circle).success(function(data) {
+            $scope.infoMessage = "Circle successfully created.";
+            $location.path("/circle");
+        }).error(function(error) {
+            $scope.errorMessage = error.body;
+        })
+    }
 });

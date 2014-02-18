@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<div ng-show="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+<div ng-show="infoMessage" class="alert alert-info">{{ infoMessage }}</div>
+<div class="action-bar panel panel-default">
+  <a href="#/circles/add" class="btn btn-primary">Create</a>
+</div>
+<div ng-show="hasCircles">
+  <table class="table table-stripped">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Is moderator?</th>
+      <th>Actions</th>
+    </tr>
+    <tr ng-repeat="circle in circles">
+      <td>{{ circle.name }}</td>
+      <td>{{ circle.description }}</td>
+      <td><span class="glyphicon glyphicon-ok" ng-show="circle.is_moderator"></span></td>
+      <td>
+        <a href="#/circles/edit/{{ circle.id }}">Edit</a>
+        <a href="#" ng-click="removeCircle(circle)" class="">Remove</a>
+      </td>
+    </tr>
+  </table>
+</div>
+<p class="muted" ng-hide="hasCircles">You aren't in any circles, yet</p>

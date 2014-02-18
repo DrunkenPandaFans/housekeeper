@@ -17,6 +17,46 @@ services.factory("ProfileService", function ($http) {
     return profileService;
 });
 
+services.factory("UserService", function ($http) {
+    var userService = {};
+
+    userService.all = function() {
+        return $http.get("/users");
+    };
+
+    userService.findByEmail = function(email) {
+        return $http.get("/users/" + email);
+    };
+    return userService;
+});
+
+services.factory("CircleService", function ($http) {
+    var circlesService = {};
+
+    circlesService.all = function () {
+        return $http.get('/circle');
+    }
+
+    circlesService.find = function(id) {
+        return $http.get('/circle/' + id);
+    }
+
+    circlesService.create = function(data) {
+        return $http.post("/circle", data)
+    }
+
+    circlesService.update = function(data) {
+        return $http.put("/circle/" + data.id, data)
+    }
+
+    circlesService.remove = function(circleId) {
+        return $http.delete("/circle/" + circleId);
+    }
+
+    return circlesService;
+    
+});
+
 services.factory("authInterceptor", function($rootScope, $q, $window) {
     return {
         request: function(config) {
