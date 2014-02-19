@@ -81,7 +81,7 @@ controllers.controller('UserController',
 });
 
 controllers.controller('CirclesListController', 
-    function ($scope, $window, $location, CircleService) {        
+    function ($scope, $window, $rootScope, $location, CircleService) {        
 
     CircleService.all().success(function(data) {
         $scope.circles = data["circles"];
@@ -100,7 +100,7 @@ controllers.controller('CirclesListController',
         }
 
         CircleService.remove(circle.id).success(function() {
-            $scope.infoMessage = "Circle was successfully removed.";
+            $rootScope.infoMessage = "Circle was successfully removed.";
         }).error(function(error) {
             $scope.errorMessage = error;
         })
@@ -111,7 +111,7 @@ controllers.controller('CirclesListController',
 });
 
 controllers.controller('AddCircleController', 
-    function($scope, $location, $window, CircleService, UserService) {    
+    function($scope, $location, $rootScope, $window, CircleService, UserService) {    
    
     UserService.all().success(function (data) {
         $scope.users = data;
@@ -176,7 +176,7 @@ controllers.controller('AddCircleController',
         }
 
         CircleService.create(circleData).success(function() {
-            $scope.infoMessage = "Circle successfully created."
+            $rootScope.infoMessage = "Circle successfully created."
             $location.path("/circles");
         }).error(function(error) {
             $scope.errorMessage = error.body;
@@ -185,7 +185,7 @@ controllers.controller('AddCircleController',
 });
 
 controllers.controller('EditCircleController', 
-    function($scope, $location, $window, $routeParams, $q, CircleService, UserService) {    
+    function($scope, $location, $window, $rootScope, $routeParams, $q, CircleService, UserService) {    
    
     $q.all([CircleService.find($routeParams.circleId), UserService.all()])
     .then(function (resources) {
@@ -251,7 +251,7 @@ controllers.controller('EditCircleController',
         $scope.circle.members = membersIds;
 
         CircleService.update($scope.circle).success(function(data) {
-            $scope.infoMessage = "Circle successfully created.";
+            $rootScope.infoMessage = "Circle successfully created.";
             $location.path("/circles");
         }).error(function(error) {
             $scope.errorMessage = error.body;
@@ -260,12 +260,12 @@ controllers.controller('EditCircleController',
 });
 
 controllers.controller("CircleDetailController", 
-    function($scope, $routeParams, $window, CircleService, UserService) {       
+    function($scope, $routeParams, $rootScope, $window, CircleService, UserService) {       
 
     var circleId = $routeParams.circleId;
 
     CircleService.find(circleId).success(function(data, status) {
-        $scope.circle = data;
+        $scope.circle = data;       
 
         $scope.members = [];
         angular.forEach($scope.circle.members, function (userId) {
@@ -297,7 +297,7 @@ controllers.controller("CircleDetailController",
         }
 
         CircleService.remove(circle.id).success(function() {
-            $scope.infoMessage = "Circle was successfully removed.";
+            $rootScope.infoMessage = "Circle was successfully removed.";
         }).error(function(error) {
             $scope.errorMessage = error;
         })
@@ -312,7 +312,7 @@ controllers.controller("CircleDetailController",
          }
 
          CircleService.update($scope.circle).success(function(data) {
-             $scope.infoMessage = "Shopping list was successfully removed";
+             $rootScope.infoMessage = "Shopping list was successfully removed";
          }).error(function(error) {
              $scope.errorMessage = "Shopping list could not been removed. " + error ;
              circleLists.push(list);
@@ -326,7 +326,7 @@ controllers.controller("CircleDetailController",
 });
 
 controllers.controller("AddShoppingListController", 
-    function($scope, $routeParams, $window, $location, CircleService) {
+    function($scope, $routeParams, $rootScope, $window, $location, CircleService) {
 
     $scope.circleId= $routeParams.circleId;    
 
@@ -382,7 +382,7 @@ controllers.controller("AddShoppingListController",
             circle.shopping_lists.push($scope.shoppingList);
 
             CircleService.update(circle).success(function(data, status) {
-                $scope.infoMessage = "Shopping list was successfully added";
+                $rootScope.infoMessage = "Shopping list was successfully added";
                 $location.path("/circles/" + $scope.circleId);
             }).error(function(error) {
                 $scope.errorMessage = "It was not possible create new shopping list. " + error;
@@ -417,7 +417,7 @@ controllers.controller("AddShoppingListController",
 });
 
 controllers.controller("EditShoppingListController", 
-    function($scope, $routeParams, $location, $window, CircleService) {
+    function($scope, $routeParams, $rootScope, $location, $window, CircleService) {
 
     $scope.circleId = $routeParams.circleId;
 
@@ -476,7 +476,7 @@ controllers.controller("EditShoppingListController",
         $scope.shoppingList.date = new Date(millis).toISOString();
 
         CircleService.update($scope.circle).success(function(data, status) {
-            $scope.infoMessage = "Shopping list was successfully added";
+            $rootScope.infoMessage = "Shopping list was successfully added";
             $location.path("/circles/" + $scope.circleId);
         }).error(function(error) {
             $scope.errorMessage = "It was not possible create new shopping list. " + error;
