@@ -5,6 +5,11 @@ describe Housekeeper::Circle do
   before do
     @circles = Housekeeper::mongo["circles"]
     @users = Housekeeper::mongo["users"]
+
+    token = Housekeeper::GoogleToken.new "abcsd", "accessthis", 1234, Time.at(765432109)
+
+    @userB = Housekeeper::User.new "octomama@github.com", token
+    @userB.save
   end
 
   after do
@@ -90,6 +95,32 @@ describe Housekeeper::Circle do
     it "returns itself" do
       updated = subject.update
       updated.must_be_same_as subject
+    end
+
+    it "updates circle with members" do
+      subject.members = [@userB]
+      subject.update
+
+      circle = @circles.find({"_id" => BSON::ObjectId.from_string(subject.id)}).first
+
+      subject.name.must_equal circle["name"]
+      subject.description.must_equal circle["description"]
+      subject.moderator.must_equal circle["moderator"]
+      subject.members[0].id.must_equal circle["members"][0]
+
+      subject.members = []
+
+      previous_moderator = subject.moderator
+      subject.update
+
+      circleB = @circles.find({"_id" => BSON::ObjectId.from_string(subject.id)}).first
+
+      previousModerator = subject.moderator
+      subject.name.must_equal circleB["name"]
+      subject.description.must_equal circleB["description"]
+      subject.moderator.must_equal circleB["moderator"]
+      subject.moderator.must_equal previous_moderator
+      circleB["members"].must_be_empty
     end
 
     it "updates circle without shopping lists" do
