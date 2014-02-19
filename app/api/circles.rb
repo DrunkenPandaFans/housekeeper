@@ -91,6 +91,7 @@ module Housekeeper
 
       updated = Housekeeper::Circle.transform(data)
       updated.id = id
+      updated.moderator = user.id
       
       updated.update
 

@@ -101,10 +101,16 @@ controllers.controller('CirclesListController',
 
         CircleService.remove(circle.id).success(function() {
             $rootScope.infoMessage = "Circle was successfully removed.";
+            for (var i = 0; i < $scope.circles.length; i++) {
+                if ($scope.circles[i] === circle) {
+                    $scope.circles.splice(i, 1);                    
+                }
+            }
+            $scope.hasCircles = $scope.circles.length > 0;
         }).error(function(error) {
             $scope.errorMessage = error;
         })
-    }
+    }    
 
     $scope.isLoggedIn = ($window.sessionStorage.token !== null);      
     
@@ -129,13 +135,19 @@ controllers.controller('AddCircleController',
     $scope.circle = {
         "name": "",
         "description": "", 
-        "members": []
+        "members": [],
+        "moderator": $window.sessionStorage.token
     };
 
     $scope.newMember = {
         "id": "",
         "email": ""
     };
+
+    $scope.isModerator = function() {
+        var userId = $window.sessionStorage.token;
+        return userId === $scope.circle.moderator;
+    }
 
     $scope.addMember = function() {
          var id = $scope.newMember.id
@@ -172,7 +184,8 @@ controllers.controller('AddCircleController',
         var circleData = {
           "name": $scope.circle.name,
           "description": $scope.circle.description,
-          "members": $scope.circle.membersIds
+          "members": membersIds,
+          "moderator": $scope.circle.moderator
         }
 
         CircleService.create(circleData).success(function() {
@@ -266,7 +279,7 @@ controllers.controller("CircleDetailController",
 
     CircleService.find(circleId).success(function(data, status) {
         $scope.circle = data;       
-
+        $scope.hasLists = $scope.circle.shopping_lists.length > 0;
         $scope.members = [];
         angular.forEach($scope.circle.members, function (userId) {
             UserService.find(userId).success(function(userData, status) {
@@ -298,6 +311,7 @@ controllers.controller("CircleDetailController",
 
         CircleService.remove(circle.id).success(function() {
             $rootScope.infoMessage = "Circle was successfully removed.";
+            
         }).error(function(error) {
             $scope.errorMessage = error;
         })
@@ -313,6 +327,7 @@ controllers.controller("CircleDetailController",
 
          CircleService.update($scope.circle).success(function(data) {
              $rootScope.infoMessage = "Shopping list was successfully removed";
+             $scope.hasLists = $scope.circle.shopping_lists > 0;
          }).error(function(error) {
              $scope.errorMessage = "Shopping list could not been removed. " + error ;
              circleLists.push(list);
@@ -320,7 +335,8 @@ controllers.controller("CircleDetailController",
     };
 
     $scope.prepareShoppingListId = function(list) {        
-        var date = new Date(list.date);
+        var dateParts = list.date.split(".");
+        var date = new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]);
         return date.toISOString();
     };
 });
@@ -361,13 +377,14 @@ controllers.controller("AddShoppingListController",
             return;
         }
 
-        var millis = Date.parse(newShoppingList.date);
-        if (isNaN(millis)) {
+        var splitted = newShoppingList.date.split(".");
+        var date = new Date(splitted[2], (splitted[1] - 1), splitted[0]);
+        if (date == null) {
             $scope.errorMessage = "Invalid format date. Please provide shopping date in format: dd.MM.yyyy.";
             return;
         }
 
-        $scope.shoppingList.date = new Date(millis).toISOString();        
+        $scope.shoppingList.date = date.toISOString();        
         
         CircleService.find($scope.circleId).success(function(data) {
             var circle = data;
@@ -426,9 +443,9 @@ controllers.controller("EditShoppingListController",
     CircleService.find($scope.circleId).success(function (data) {
         $scope.circle = data;       
         angular.forEach($scope.circle.shopping_lists, function (list) {            
-            var listDate = new Date(list.date).toISOString();
+            var listDate = new Date(list.date);
             var shoppingListIdDate = new Date($scope.shoppingListId).toISOString();
-            if (listDate === shoppingListIdDate) {
+            if (listDate.toISOString() === shoppingListIdDate) {
                 $scope.shoppingList = list;
             }
             
@@ -467,13 +484,14 @@ controllers.controller("EditShoppingListController",
             return;
         }
 
-        var millis = Date.parse(shoppingList.date);
-        if (isNaN(millis)) {
+        var splitted = shoppingList.date.split(".");
+        var date = new Date(splitted[2], (splitted[1] - 1), splitted[0]);
+        if (date == null) {
             $scope.errorMessage = "Invalid format date. Please provide shopping date in format: dd.MM.yyyy.";
             return;
         }
 
-        $scope.shoppingList.date = new Date(millis).toISOString();
+        $scope.shoppingList.date = date.toISOString();
 
         CircleService.update($scope.circle).success(function(data, status) {
             $rootScope.infoMessage = "Shopping list was successfully added";

@@ -24,7 +24,7 @@
 </div>
 <div class="panel panel-default">
   <div class="panel-heading">Shopping lists</div>  
-  <div class="panel-body" ng-show="circle.shopping_lists">
+  <div class="panel-body" ng-show="hasLists">
     <table class="table table-striped">
       <thead>
         <tr>        
@@ -45,7 +45,7 @@
       </tbody>
     </table>
   </div>
-  <div class="panel-body" ng-hide="circle.shopping_lists">
+  <div class="panel-body" ng-hide="hasLists">
     <p>This circle doesn't have any shopping lists.</p>
     <p>If you are ready to for some serious shopping, just click on New Shopping Lists.</p>
   </div>
