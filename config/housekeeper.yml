@@ -1,6 +1,0 @@
-google_key: __CLIENT_ID__
-google_secret: __CLIENT_SECRET__
-google_auth_uri: __GOOGLE_AUTH_URI__
-google_token_uri: __GOOGLE_TOKEN_URI__
-mongo_host: __MONGO_URL__
-mongo_port: __MONGO_PORT__
