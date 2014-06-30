@@ -5,12 +5,17 @@ class CircleTest < ActiveSupport::TestCase
     Circle.create!(name: "Amazon", description: "Amazon shopping circle")
   end
 
-  test "save circle without name" do
+  test "validate circle" do
+    circle = Circle.new(name: "Alza", description: "Friends of shopping on Alza.")
+    assert circle.valid?
+  end
+
+  test "invalidate circle without name" do
     circle = Circle.new(name: "", description: "Empty circle")
     assert circle.invalid?
   end
 
-  test "save circle with existing name" do
+  test "invalidate circle with existing name" do
     circle = Circle.new(name: "Amazon", description: "Another amazon shopping circle")
     assert circle.invalid?
   end
