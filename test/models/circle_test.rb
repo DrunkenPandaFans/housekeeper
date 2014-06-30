@@ -19,4 +19,9 @@ class CircleTest < ActiveSupport::TestCase
     circle = Circle.new(name: "Amazon", description: "Another amazon shopping circle")
     assert circle.invalid?
   end
+
+  test "invalidate circle with description longer than 255 characters" do
+    circle = Circle.new(name: "New Amazon", description: "a" * 256)
+    assert circle.invalid?
+  end
 end
