@@ -23,7 +23,8 @@ class UserProfileTest < ActionDispatch::IntegrationTest
     assert_equal 401, response.status
     assert_equal Mime::JSON, response.content_type
 
-    assert_equal "Bad credentials", json(response.body)
+    error = json(response.body)
+    assert_equal "Bad credentials.", error[:error]
   end
 
   test "get profile of different user" do
@@ -32,15 +33,28 @@ class UserProfileTest < ActionDispatch::IntegrationTest
     assert_equal 200, response.status
     assert_equal Mime::JSON, response.content_type
 
-    assert_equal @jan.name, json(response.body)[:name]
+    user = json(response.body)
+    assert_equal @jan.name, user[:name]
   end
 
   test "get profile of user without authentication" do
-    get "/users/octocat"
+    get "/users/#{@jan.id}"
 
     assert_equal 401, response.status
     assert_equal Mime::JSON, response.content_type
 
-    assert_equal "Bad credentials", json(response.body)
+    error = json(response.body)
+    assert_equal "Bad credentials.", error[:error]
+  end
+
+  test "get profile of nonexistent user" do
+    get "/users/-12323", {}, 
+      {"Authorization" => "Token token=#{@jan.token}"}
+
+    assert_equal 404, response.status
+    assert_equal Mime::JSON, response.content_type
+
+    error = json(response.body)
+    assert_equal "User not found.", error[:error]
   end
 end

@@ -3,10 +3,17 @@ class UsersController < ApplicationController
 
   def show
     id = params[:id]
-    user = User.find(id) if id
-    user ||= @current_user
+    if id
+      user = User.find_by_id(id)
+    else
+      user = @current_user
+    end
 
-    render json: user, status: 200
+    if user
+      render json: user, status: 200
+    else
+      render json: { error: "User not found."}, status: 404
+    end
   end
 
   protected
@@ -23,6 +30,6 @@ class UsersController < ApplicationController
 
     def render_unauthorized
       self.headers["WWW-Authenticate"] = 'Token realm="Users"'
-      render json: "Bad credentials", status: 401
+      render json: { error: "Bad credentials."}, status: 401
     end
 end
