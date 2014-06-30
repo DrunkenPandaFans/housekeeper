@@ -2,7 +2,11 @@ class UsersController < ApplicationController
   before_action :authenticate
 
   def show
-    render json: @current_user, status: 200
+    id = params[:id]
+    user = User.find(id) if id
+    user ||= @current_user
+
+    render json: user, status: 200
   end
 
   protected
