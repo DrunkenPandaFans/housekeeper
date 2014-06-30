@@ -11,11 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140630133327) do
+ActiveRecord::Schema.define(version: 20140630154740) do
 
   create_table "circles", force: true do |t|
     t.string   "name"
     t.text     "description", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", force: true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "image"
+    t.boolean  "send_sms"
+    t.string   "token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
