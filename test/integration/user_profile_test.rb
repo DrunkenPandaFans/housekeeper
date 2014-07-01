@@ -9,7 +9,7 @@ class UserProfileTest < ActionDispatch::IntegrationTest
   end
 
   test "get authenticated user profile" do
-    get '/user', {}, {"Authorization" => "Token token=#{@jan.token}"}
+    get '/user', {}, {"Authorization" => token_auth(@jan.token)}
 
     assert_equal 200, response.status
     assert_equal Mime::JSON, response.content_type
@@ -28,7 +28,7 @@ class UserProfileTest < ActionDispatch::IntegrationTest
   end
 
   test "get profile of different user" do
-    get "/users/#{@jan.id}", {}, {"Authorization" => "Token token=abcde"}
+    get "/users/#{@jan.id}", {}, {"Authorization" => token_auth("abcde")}
 
     assert_equal 200, response.status
     assert_equal Mime::JSON, response.content_type
@@ -48,8 +48,8 @@ class UserProfileTest < ActionDispatch::IntegrationTest
   end
 
   test "get profile of nonexistent user" do
-    get "/users/-12323", {}, 
-      {"Authorization" => "Token token=#{@jan.token}"}
+    get "/users/-12323", {},
+      {"Authorization" => token_auth(@jan.token)}
 
     assert_equal 404, response.status
     assert_equal Mime::JSON, response.content_type
