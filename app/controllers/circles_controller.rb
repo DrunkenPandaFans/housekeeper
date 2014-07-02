@@ -8,6 +8,6 @@ class CirclesController < ApplicationController
         "%#{name.downcase}%")
     end
 
-    render json: circles, status: 200
+    render json: circles, status: 200, root: false
   end
 end
