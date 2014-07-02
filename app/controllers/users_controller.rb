@@ -1,16 +1,21 @@
 class UsersController < ApplicationController
   before_action :authenticate
 
+  def index
+    @users = User.all
+    render json: @users, status: 200, root: false
+  end
+
   def show
     id = params[:id]
     if id
-      user = User.find_by_id(id)
+      @user = User.find_by_id(id)
     else
-      user = @current_user
+      @user = @current_user
     end
 
-    if user
-      render json: user, status: 200
+    if @user
+      render json: @user, status: 200, root: false
     else
       render json: { error: "User not found."}, status: 404
     end
