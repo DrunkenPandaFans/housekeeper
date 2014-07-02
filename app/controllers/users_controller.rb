@@ -21,6 +21,14 @@ class UsersController < ApplicationController
     end
   end
 
+  def update
+    if @current_user.update(user_params)
+      render json: @current_user, status: 200, root: false
+    else
+      render json: @current_user.errors.full_messages, status: 422
+    end
+  end
+
   protected
 
     def authenticate
@@ -36,5 +44,9 @@ class UsersController < ApplicationController
     def render_unauthorized
       self.headers["WWW-Authenticate"] = 'Token realm="Users"'
       render json: { error: "Bad credentials."}, status: 401
+    end
+
+    def user_params
+      params.permit(:name, :email, :image, :send_sms)
     end
 end
