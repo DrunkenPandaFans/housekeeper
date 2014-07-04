@@ -5,8 +5,7 @@ module API
       name = params[:name]
 
       if name
-        circles = circles.where("lower(name) like ?",
-          "%#{name.downcase}%")
+        circles = circles.search(name)
       end
 
       render json: circles, status: 200, root: false
