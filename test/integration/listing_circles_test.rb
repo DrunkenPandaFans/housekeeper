@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ListingShoppingListsTest < ActionDispatch::IntegrationTest
+class ListingCirclesTest < ActionDispatch::IntegrationTest
   setup do
     Circle.create!(name: 'Amazon Book club', description: 'Shopping for books on Amazon')
     Circle.create!(name: 'Local Albert shopping', description: 'shopping generics in Albert')
