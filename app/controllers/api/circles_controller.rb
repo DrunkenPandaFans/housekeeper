@@ -20,6 +20,16 @@ module API
       end
     end
 
+    def create
+      circle = Circle.new(circle_params)
+      if circle.save
+        # location tries circle_url instead of prefixed version
+        render json: circle, status: 201, location: api_circle_url(circle)
+      else
+        render json: circle.errors.full_messages, status: 422
+      end
+    end
+
     private
       
       def circle_params
