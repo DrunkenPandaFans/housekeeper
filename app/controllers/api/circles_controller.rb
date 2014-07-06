@@ -30,6 +30,16 @@ module API
       end
     end
 
+    def destroy
+      circle = Circle.find_by_id(params[:id])
+      if circle
+        circle.destroy!
+        head 204
+      else
+        head 404
+      end
+    end
+
     private
       
       def circle_params
