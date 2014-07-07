@@ -1,5 +1,7 @@
 Housekeeper::Application.routes.draw do
 
+  root 'home#show'
+
   namespace :api, path: '/',  constraint: { subdomain: 'api' } do
     resources :circles, except: [:new, :edit]
     resources :users, only: [:index, :show]
