@@ -7,8 +7,34 @@
   <%= csrf_meta_tags %>
 </head>
 <body ng-app="housekeeperApp">
-
-<%= yield %>
-
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Housekeeper</a>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+          <li class="active">
+            <a href="#">Overview</a>
+          </li>
+          <li>
+            <a href="#">Circles</a>
+          </li>
+          <li>
+            <a href="#">Profile</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1>Dashboard</h1>
+        <div class="row">
+          <%= yield %>
+        </div>
+     </div>
+    </div>
 </body>
 </html>
