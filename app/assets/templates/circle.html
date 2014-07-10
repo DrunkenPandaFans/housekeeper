@@ -1,0 +1,35 @@
+<div class="panel panel-success">
+  <div class="panel-heading">{{circle.name}}</div>
+  <div class="row panel-body">
+    <div class="col-xs-6 col-md-3">
+      <a href="#" class="thumbnail">
+        <img data-src="{{circle.image}}" alt="{{circle.name}} avatar"/>
+      </a>
+    </div>
+    <div class="col-xs-offset-6 col-md-offset-3 col-xs-6 col-md-9">
+      <p>{{circle.description}}</p>
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Is moderator?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="m in circle.members">
+        <td>
+          <img src="{{m.image}}" alt="{{m.name}} avatar"/>
+        </td>
+        <td>{{m.name}}</td>
+        <td>
+          <i ng-show="m.is_moderator" class="glyphicon glyphicon-ok"></i>
+          <i ng-hide="m.is_moderator" class="glyphicon glyphicon-remove"></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
