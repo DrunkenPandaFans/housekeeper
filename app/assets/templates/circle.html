@@ -3,7 +3,7 @@
   <div class="row panel-body">
     <div class="col-xs-6 col-md-3">
       <a href="#" class="thumbnail">
-        <img data-src="{{circle.image}}" alt="{{circle.name}} avatar"/>
+        <img ng-src="{{circle.logo}}" alt="{{circle.name}} avatar"/>
       </a>
     </div>
     <div class="col-xs-offset-6 col-md-offset-3 col-xs-6 col-md-9">
@@ -22,7 +22,7 @@
     <tbody>
       <tr ng-repeat="m in circle.members">
         <td>
-          <img src="{{m.image}}" alt="{{m.name}} avatar"/>
+          <img ng-src="{{m.image}}" alt="{{m.name}} avatar"/>
         </td>
         <td>{{m.name}}</td>
         <td>

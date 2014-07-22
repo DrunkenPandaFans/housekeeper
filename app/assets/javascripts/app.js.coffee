@@ -42,6 +42,7 @@ circles = [{
   id: 1,
   name: "Amazon circle",
   description: "Circle for amazon shopping lists",
+  logo: "http://www.turnerduckworth.com/media/filer_public/b4/ac/b4ac5dfe-b335-403c-83b2-ec69e01f94e6/td-amazon-hero.svg",
   shopping_lists: [
     {name: "Amazon Xmas shopping", description: "To buy stuff from Amazon right before xmas"},
     {name: "Random amazon shopping", description: "Random amazon stuff for greater good"}
@@ -55,6 +56,7 @@ circles = [{
   id: 2,
   name: "Albert",
   description: "Shopping for generic albert stuff",
+  logo: "http://www.albert.cz/-a7643?field=data",
   shopping_lists: [],
   members: [
     {name: "Jan", email: "jan@email.com", is_moderator: false, image: "http://awesomeurl.com/jan.png"},
@@ -65,6 +67,7 @@ circles = [{
   id: 3,
   name: "My household shopping",
   description: "Shopping for my household.",
+  logo: "http://www.fireinspiration.com/wp-content/uploads/logo/logo_40.jpg",
   shopping_list: [
     {name: "Shopping list for July 7th", description: "All stuff for house for deadline on July 7th"}
   ],
