@@ -1,34 +1,47 @@
-<div class="panel panel-success">
-  <div class="panel-heading">{{circle.name}}</div>
-  <div class="row panel-body">
-    <div class="col-xs-6 col-md-3">
-      <a href="#" class="thumbnail">
-        <img ng-src="{{circle.logo}}" alt="{{circle.name}} avatar"/>
-      </a>
-    </div>
-    <div class="col-xs-offset-6 col-md-offset-3 col-xs-6 col-md-9">
-      <p>{{circle.description}}</p>
+<div class="row">
+  <div class="col-md-8 panel panel-default info-panel">
+    <div class="panel-heading">{{circle.name}}</div>
+    <div class="row panel-body">
+      <div class="col-md-3">
+        <a href="#" class="thumbnail">
+          <img ng-src="{{circle.logo}}" alt="{{circle.name}} avatar"/>
+        </a>
+      </div>
+      <div class="col-md-9">
+        <p>{{circle.description}}</p>
+      </div>
     </div>
   </div>
 
+  <div class="col-md-3 col-md-offset-1 panel panel-default info-panel">
+    <div class="panel-heading">Members</div>
+    <div class="row panel-body">
+      <div class="col-md-4" ng-repeat="m in circle.members">
+        <a href="#" class="thumbnail">
+          <img ng-src="m.image" alt="m.name"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <h2>Shopping Lists</h2>
   <table class="table">
     <thead>
       <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Is moderator?</th>
+        <td>Name</td>
+        <td>Description</td>
+        <td>Deadline</td>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="m in circle.members">
+      <tr ng-repeat="sl in circle.shopping_lists">
         <td>
-          <img ng-src="{{m.image}}" alt="{{m.name}} avatar"/>
+          <a href="#/{{circle.id}}/{{sl.id}}">{{ sl.name }}</a>
         </td>
-        <td>{{m.name}}</td>
-        <td>
-          <i ng-show="m.is_moderator" class="glyphicon glyphicon-ok"></i>
-          <i ng-hide="m.is_moderator" class="glyphicon glyphicon-remove"></i>
-        </td>
+        <td>{{ sl.description }}</td>
+        <td>{{ sl.deadline }}</td>
       </tr>
     </tbody>
   </table>

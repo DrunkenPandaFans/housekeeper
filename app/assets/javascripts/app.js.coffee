@@ -20,14 +20,40 @@ CircleHomeCtrl = ($scope, $routeParams) ->
      $scope.circle = c
      break
 
+CircleCreationCtrl = ($scope, $location) ->
+  $scope.submit = ->
+    # call service instead
+    circles.push($scope.circle)
+    $location.path('/home')
+
+CircleUpdateCtrl = ($scope, $routeParams, $location) ->
+  for c in circles
+    if c.id == parseInt($routeParams.id)
+      $scope.circle = c
+      break
+
+  $scope.submit = ->
+    # call service instead
+    circles.push($scope.circle)
+    $location.path('/home')
 
 App.controller 'HomeCtrl', ["$scope", HomeCtrl]
 App.controller 'CircleHomeCtrl', ["$scope", "$routeParams", CircleHomeCtrl]
+App.controller 'CircleCreationCtrl', ["$scope", "$location", CircleCreationCtrl]
+App.controller 'CircleUpdateCtrl', ["$scope", "$routeParams", "$location", CircleUpdateCtrl]
 
 router = ($routeProvider) ->
   $routeProvider.when '/home', {
     templateUrl: '../assets/home.html',
     controller: 'HomeCtrl'
+  }
+  $routeProvider.when '/circle/new', {
+    templateUrl: '../assets/circle-create.html',
+    controller: 'CircleCreationCtrl'
+  }
+  $routeProvider.when '/circle/:id/edit', {
+    templateUrl: '../assets/circle-create.html',
+    controller: 'CircleUpdateCtrl'
   }
   $routeProvider.when '/circle/:id', {
     templateUrl: '../assets/circle.html',
@@ -44,8 +70,8 @@ circles = [{
   description: "Circle for amazon shopping lists",
   logo: "http://www.turnerduckworth.com/media/filer_public/b4/ac/b4ac5dfe-b335-403c-83b2-ec69e01f94e6/td-amazon-hero.svg",
   shopping_lists: [
-    {name: "Amazon Xmas shopping", description: "To buy stuff from Amazon right before xmas"},
-    {name: "Random amazon shopping", description: "Random amazon stuff for greater good"}
+    {name: "Amazon Xmas shopping", description: "To buy stuff from Amazon right before xmas", deadline: "2014-12-15"},
+    {name: "Random amazon shopping", description: "Random amazon stuff for greater good", deadline: "2015-01-01"}
   ],
   members: [
     {name: "Jan", email: "jan@email.com", is_moderator: true, image: "http://awesomeurl.com/jan.png"},
@@ -69,7 +95,7 @@ circles = [{
   description: "Shopping for my household.",
   logo: "http://www.fireinspiration.com/wp-content/uploads/logo/logo_40.jpg",
   shopping_list: [
-    {name: "Shopping list for July 7th", description: "All stuff for house for deadline on July 7th"}
+    {name: "Shopping list for July 7th", description: "All stuff for house for deadline on July 7th", deadline: "2015-02-01"}
   ],
   members: [
     {name: "Katka", email: "katka@email.com", is_moderator: true, image: "http://awesomeurl.com/katka.png"},
