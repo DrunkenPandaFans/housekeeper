@@ -9,11 +9,15 @@
       </div>
       <div class="col-md-9">
         <p>{{circle.description}}</p>
+        <div class="pull-right">
+          <a href="#/circle/{{circle.id}}/edit" class="btn btn-default">Edit</a>
+          <a ng-click="remove(circle.id)" class="btn btn-danger">Remove</a>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="col-md-3 col-md-offset-1 panel panel-default info-panel">
+  <div class="col-md-3 panel panel-default info-panel">
     <div class="panel-heading">Members</div>
     <div class="row panel-body">
       <div class="col-md-4" ng-repeat="m in circle.members">
@@ -27,7 +31,7 @@
 
 <div>
   <h2>Shopping Lists</h2>
-  <table class="table">
+  <table class="table" ng-show="hasShoppingLists()">
     <thead>
       <tr>
         <td>Name</td>
@@ -45,4 +49,5 @@
       </tr>
     </tbody>
   </table>
+  <p ng-hide="hasShoppingLists()">This circle hasn't been out shopping, yet...</p>
 </div>

@@ -15,4 +15,5 @@
 //= require bootstrap
 //= require angular
 //= require angular-route
+//= require ./circles
 //= require_tree .
