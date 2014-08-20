@@ -15,5 +15,6 @@
 //= require bootstrap
 //= require angular
 //= require angular-route
+//= require angular-flash
 //= require ./circles
 //= require_tree .
