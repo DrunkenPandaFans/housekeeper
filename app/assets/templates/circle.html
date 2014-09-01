@@ -34,15 +34,15 @@
   <table class="table" ng-show="hasShoppingLists()">
     <thead>
       <tr>
-        <td>Name</td>
-        <td>Description</td>
-        <td>Deadline</td>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Deadline</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="sl in circle.shopping_lists">
         <td>
-          <a href="#/{{circle.id}}/{{sl.id}}">{{ sl.name }}</a>
+          <a href="#/circle/{{circle.id}}/list/{{sl.id}}">{{ sl.name }}</a>
         </td>
         <td>{{ sl.description }}</td>
         <td>{{ sl.deadline }}</td>
