@@ -2,21 +2,21 @@ CircleServices = angular.module("circleServices", []);
 
 CircleServices.factory "Circle", ->
   service =
-    query: () -> circles,
+    query: () -> root.circles,
 
-    get: (id) -> circles.find (c) -> c.id == id
+    get: (id) -> root.circles.find (c) -> c.id == id
 
     save: (circle) ->
-      circle.id = circles.length + 1
-      circles.push(circle)
+      circle.id = root.circles.length + 1
+      root.circles.push(circle)
 
     update: (circle) ->
       original = @get(circle.id)
-      index = circles.indexOf(original)
-      circles[index] = circle
+      index = root.circles.indexOf(original)
+      root.circles[index] = circle
 
     remove: (id) ->
-      @circles = @circles.filter (c) -> c.id == id
+      root.circles = root.circles.filter (c) -> c.id != id
 
 
 circles = [{
@@ -57,3 +57,8 @@ circles = [{
     {name: "Sue", email: "sue@email.com", is_moderator: true, image: "http://awesomeurl.com/sue.png"}
   ]
 }]
+
+root = exports ? this
+
+unless root.circles
+  root.circles = circles
