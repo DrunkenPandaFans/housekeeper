@@ -1,4 +1,4 @@
-App = angular.module('housekeeperApp', ['circles', 'ngRoute'])
+App = angular.module('housekeeperApp', ['circles', 'shoppingLists', 'ngRoute'])
 
 router = ($routeProvider) ->
   $routeProvider.when '/home', {
@@ -16,6 +16,10 @@ router = ($routeProvider) ->
   $routeProvider.when '/circle/:id', {
     templateUrl: '../assets/circle.html',
     controller: 'CircleDetailCtrl'
+  }
+  $routeProvider.when '/circle/:circleId/shopping-list/:id', {
+    templateUrl: '../assets/shopping_list.html',
+    controller: 'ShoppingListDetailCtrl'
   }
   $routeProvider.otherwise { redirectTo: '/home' }
 

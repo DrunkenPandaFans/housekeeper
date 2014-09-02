@@ -1,4 +1,4 @@
-CircleServices = angular.module("circleServices", []);
+CircleServices = angular.module "circleServices", []
 
 CircleServices.factory "Circle", ->
   service =

@@ -17,5 +17,5 @@
 //= require angular-route
 //= require angular-flash
 //= require ./circles
-//= require ./shoppling_lists
+//= require ./shopping_lists
 //= require_tree .

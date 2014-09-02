@@ -1,7 +1,7 @@
-CircleControllers = angular.module("circleControllers", ["ngRoute", "flash"]);
+CircleControllers = angular.module("circleControllers", ["ngRoute", "flash"])
 
 CircleHomeCtrl = ($scope, Circle) ->
- $scope.circles = Circle.query()
+  $scope.circles = Circle.query()
 
 CircleDetailCtrl = ($scope, $routeParams, $location, Circle) ->
   $scope.circle = Circle.get(parseInt($routeParams.id))
@@ -25,7 +25,11 @@ CircleUpdateCtrl = ($scope, $routeParams, $location, flash, Circle) ->
     flash('success', 'Circle was successfully created')
     $location.path('/home')
 
-CircleControllers.controller 'CircleHomeCtrl', ["$scope", "Circle", CircleHomeCtrl]
-CircleControllers.controller 'CircleDetailCtrl', ["$scope", "$routeParams", "$location", "Circle", CircleDetailCtrl]
-CircleControllers.controller 'CircleCreationCtrl', ["$scope", "$location", "Circle", CircleCreationCtrl]
-CircleControllers.controller 'CircleUpdateCtrl', ["$scope", "$routeParams", "$location", "flash", "Circle", CircleUpdateCtrl]
+CircleControllers.controller 'CircleHomeCtrl',
+  ["$scope", "Circle", CircleHomeCtrl]
+CircleControllers.controller 'CircleDetailCtrl',
+  ["$scope", "$routeParams", "$location", "Circle", CircleDetailCtrl]
+CircleControllers.controller 'CircleCreationCtrl',
+  ["$scope", "$location", "Circle", CircleCreationCtrl]
+CircleControllers.controller 'CircleUpdateCtrl',
+  ["$scope", "$routeParams", "$location", "flash", "Circle", CircleUpdateCtrl]

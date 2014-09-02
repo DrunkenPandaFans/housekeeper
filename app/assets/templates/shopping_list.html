@@ -1,0 +1,36 @@
+<div class="row">
+  <h1>{{ shoppingList.title }}</h1>
+  <p>{{ shoppingList.description }}</p>
+  <p>Deadline: {{ shoppingList.deadline }}</p>
+  <p>Moderator: <a href="#/user/{{shoppingList.author.id}}">{{ shoppingList.author.name }}</a></p>
+</div>
+
+<div class="row">
+  <h2>Items</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Buyer</th>
+        <th>Price</th>
+        <th>Created at</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in shoppingList.items">
+        <td>{{ item.amount }} x {{ item.name }}</td>
+        <td><a href="#/user/{{item.buyer.id}}">{{ item.buyer.name }}</a></td>
+        <td>{{ item.price }}</td>
+        <td>{{ item.created_at }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="row">
+  <h2>Comments</h2>
+  <div ng-repeat="c in shoppingList.comments">
+    <p>{{ c.text }}</p>
+    <p class="muted">posted at {{ c.posted_at }} by <a href="#/user/{{c.author.id}}">{{ c.author.name }}</a>
+  </div>
+</div>
