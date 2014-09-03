@@ -38,7 +38,14 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-gem 'spring', group: :development
+group :development do
+  gem 'spring'
+  gem 'sqlite3'
+end
+
+group :production do
+  gem 'pg'
+end
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
