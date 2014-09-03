@@ -1,12 +1,12 @@
 <div class="row">
-  <h1>{{ shoppingList.title }}</h1>
+  <h1 class="subheader">{{ shoppingList.title }}</h1>
   <p>{{ shoppingList.description }}</p>
   <p>Deadline: {{ shoppingList.deadline }}</p>
-  <p>Moderator: <a href="#/user/{{shoppingList.author.id}}">{{ shoppingList.author.name }}</a></p>
+  <p>Moderator: <a href="#/user/{{shoppingList.moderator.id}}">{{ shoppingList.moderator.name }}</a></p>
 </div>
 
 <div class="row">
-  <h2>Items</h2>
+  <h3 class="subheader">Items</h3>
   <table class="table">
     <thead>
       <tr>
@@ -28,9 +28,19 @@
 </div>
 
 <div class="row">
-  <h2>Comments</h2>
-  <div ng-repeat="c in shoppingList.comments">
+  <h3 class="subheader">Comments</h3>
+  <form class="form" role="form" id="comment-form">
+    <div class="form-group">
+      <textarea id="comment-text" class="form-control"
+          rows="3" cols="150" placeholder="Write your comment here"
+          ng-model="newComment.text"></textarea>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-default" ng-click="sendComment(newComment)">Send</button>
+    </div>
+  </form>
+  <div class="comment" ng-repeat="c in shoppingList.comments | orderBy: 'posted_at':true">
     <p>{{ c.text }}</p>
-    <p class="muted">posted at {{ c.posted_at }} by <a href="#/user/{{c.author.id}}">{{ c.author.name }}</a>
+    <p class="text-muted">posted at {{ c.posted_at }} by <a href="#/user/{{c.author.id}}">{{ c.author.name }}</a>
   </div>
 </div>
