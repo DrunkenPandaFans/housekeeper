@@ -8,6 +8,8 @@ development:
   database: localhost
   pool: 5
   timeout: 5000
+  username: iref
+  password: n0m4d1us
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -17,3 +19,5 @@ test:
   database: localhost
   pool: 5
   timeout: 5000
+  username: iref
+  password: n0m4d1us
