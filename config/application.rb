@@ -22,6 +22,8 @@ module Housekeeper
 
     config.assets.paths << "#{Rails}/vendor/assets/fonts"
 
+    config.assets.paths << "#{Rails}/app/assets/templates"
+
     config.serve_static_assets = true
   end
 end
