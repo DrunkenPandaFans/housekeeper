@@ -3,6 +3,9 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.1'
 
+# PostgreSQL adapter
+gem 'pg'
+
 # Use ActionModel Serializers for JSON creation
 gem 'active_model_serializers'
 
@@ -35,14 +38,9 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-group :development do
-  gem 'spring'
-  gem 'sqlite3'
-end
+gem 'spring', group: :development
 
-group :production do
-  gem 'pg'
-end
+gem 'rails_12factor', group: :production
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
