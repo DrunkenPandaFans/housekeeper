@@ -18,7 +18,7 @@ ShoppingListServices.factory "ShoppingList", () ->
     delete: (id) ->
       root.shopping_lists = root.shopping_lists.filter (s) -> s.id != id
 
-ShoppingListServices.factory "Comment", (ShoppingList) ->
+ShoppingListServices.factory "Comment", ["ShoppingList", (ShoppingList) ->
   comment =
     create: (newComment, shoppingListId) ->
       sl = ShoppingList.get(shoppingListId)
@@ -27,7 +27,7 @@ ShoppingListServices.factory "Comment", (ShoppingList) ->
       newComment.author = { id: 1, name: "test author" }
       sl.comments.push(newComment)
       newComment
-
+]
 
 shopping_lists = [
   {
