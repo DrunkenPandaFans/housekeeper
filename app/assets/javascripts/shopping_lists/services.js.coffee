@@ -18,6 +18,15 @@ ShoppingListServices.factory "ShoppingList", () ->
     delete: (id) ->
       root.shopping_lists = root.shopping_lists.filter (s) -> s.id != id
 
+    addItem: (item, shoppingListId) ->
+      sl = @get(shoppingListId)
+      item.buyer = { id: 1, name: "test author" }
+      item.price = 0
+      item.amount ||= 1
+      item.created_at = new Date().toISOString()
+      sl.items.push(item)
+      item
+
 ShoppingListServices.factory "Comment", ["ShoppingList", (ShoppingList) ->
   comment =
     create: (newComment, shoppingListId) ->

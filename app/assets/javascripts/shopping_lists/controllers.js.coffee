@@ -8,4 +8,10 @@ ShoppingListDetailCtrl = ($scope, $routeParams, ShoppingList, Comment) ->
     $scope.newComment = {}
     # add to model on success and notify
 
+  $scope.addItem = (item) ->
+    ShoppingList.addItem(item, $scope.shoppingList.id)
+    $scope.newItem = {}
+    # add to model and notify
+
+
 ShoppingListControllers.controller 'ShoppingListDetailCtrl', ['$scope', '$routeParams', 'ShoppingList', 'Comment', ShoppingListDetailCtrl]
