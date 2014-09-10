@@ -1,8 +1,9 @@
 <div class="row">
-  <h1 class="subheader">{{ shoppingList.title }}</h1>
-  <a href="#/circle/{{ shoppingList.circle_id }}/shopping-list/{{ shoppingList.id }}/edit" class="pull-right">
-    <i class="glyphicon glyphicon-pencil"></i>
-  </a>
+  <h1 class="subheader">
+    {{ shoppingList.title }}
+    <a class="edit-icon" href="#/circle/{{shoppingList.circle_id}}/shopping-list/{{shoppingList.id}}/edit">
+      <i class="glyphicons glyphicon-pencil"></i>
+  </h1>
   <p>{{ shoppingList.description }}</p>
   <p>Deadline: {{ shoppingList.deadline }}</p>
   <p>Moderator: <a href="#/user/{{shoppingList.moderator.id}}">{{ shoppingList.moderator.name }}</a></p>

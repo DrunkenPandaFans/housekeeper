@@ -25,7 +25,8 @@ ShoppingListEditCtrl = ($scope, $routeParams, $location, ShoppingList) ->
     circleId = $routeParams.circleId
     $location.path("/circle/" + circleId + "/shopping-list/" + shoppingList.id)
 
-  $scope.back = () -> $location.path("/circle/" + $routeParams.circleId)
+  $scope.back = () ->
+    $location.path("/circle/" + $routeParams.circleId + "/shopping-list/" + $routeParams.id)
 
 
 ShoppingListControllers.controller 'ShoppingListDetailCtrl', ['$scope', '$routeParams', 'ShoppingList', 'Comment', ShoppingListDetailCtrl]
