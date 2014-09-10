@@ -1,0 +1,24 @@
+<form class="form-horizontal" role="form"i novalidate>
+  <div class="form-group">
+    <label class="control-label" for="title">Title</label>
+    <div>
+      <input type="text" class="form-control" ng-model="shoppingList.title" placeholder="name"/>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="description">Description</label>
+    <div>
+      <textarea class="form-control" row="3" col="120" ng-model="shoppingList.description"></textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="Deadline">Deadline</label>
+    <div>
+      <input type="text" class="form-control" ng-model="shoppingList.deadline" placeholder="01.01.2015"/>
+    </div>
+  </div>
+  <div class="form-group">
+    <a class="btn btn-default" ng-click="back()">Cancel</a>
+    <button class="btn btn-primary" type="submit" ng-click="submit(shoppingList)">Create</button>
+  </div>
+</form>

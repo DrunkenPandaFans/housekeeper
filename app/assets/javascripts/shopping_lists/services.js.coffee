@@ -44,6 +44,7 @@ shopping_lists = [
     title: "test"
     description: "testing shopping lists"
     deadline: "2014-12-12"
+    circle_id: 1
     moderator: { id: 1, name: "Jan Ferko" },
     items: [
       { id: 2, name: "Clojure in Action", amount: 1, price: 0, created_at: "2014-09-11 14:50", buyer: {id: 1, name: "Jan Ferko"} },
@@ -59,6 +60,7 @@ shopping_lists = [
     description: "testing shopping list 2",
     deadline: "2015-01-01",
     moderator: { id: 2, name: "Sue Ferkova" },
+    circle_id: 2,
     items: [
       { id: 3, amount: 1, price: 200, name: "Learn yourself some Haskell for greater good", buyer: {id: 1, name: "Jan Ferko" }, created_at: "2014-08-12 15:43:20"},
       { id: 5, amount: 1, price: 100, name: "War and Peace", buyer: { id: 2, name: "Sue Ferkova" }, created_at: "2014-08-12 06:24:34"}
