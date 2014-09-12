@@ -7,7 +7,7 @@ ShoppingListServices.factory "ShoppingList", () ->
     get: (id) -> root.shopping_lists.find (sl) -> sl.id == id
 
     save: (sl) ->
-      sl.id = root.shopping_lists.length
+      sl.id = root.shopping_lists.length + 1
       root.shopping_lists[sl.id] = sl
 
     update: (sl) ->

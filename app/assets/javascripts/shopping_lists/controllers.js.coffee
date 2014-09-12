@@ -18,16 +18,31 @@ ShoppingListEditCtrl = ($scope, $routeParams, $location, ShoppingList) ->
 
   $scope.submit = (shoppingList) ->
     shoppingList.id = parseInt($routeParams.id)
-    shoppingList.moderator = { id: 1, name: "Test test" }
-    shoppingList.circle_id = parseInt($routeParams.circleId)
     ShoppingList.update(shoppingList)
 
     circleId = $routeParams.circleId
+    $scope.shoppingList = {}
     $location.path("/circle/" + circleId + "/shopping-list/" + shoppingList.id)
 
   $scope.back = () ->
     $location.path("/circle/" + $routeParams.circleId + "/shopping-list/" + $routeParams.id)
 
+ShoppingListCreateCtrl = ($scope, $routeParams, $location, ShoppingList) ->
+  $scope.submit = (shoppingList) ->
+    shoppingList.moderator = {id: 1, name: 'Test'}
+    shoppingList.items = []
+    shoppingList.comments = []
+    shoppingList.circle_id = parseInt($routeParams.id)
+
+    ShoppingList.save(shoppingList)
+
+    $scope.shoppingList = {}
+    $location.path("/circle/" + $routeParams.id + "/shopping-list/" + shoppingList.id)
+
+  $scope.back = () ->
+    $location.path("/circle/" + $routeParams.circleId)
+
 
 ShoppingListControllers.controller 'ShoppingListDetailCtrl', ['$scope', '$routeParams', 'ShoppingList', 'Comment', ShoppingListDetailCtrl]
 ShoppingListControllers.controller 'ShoppingListEditCtrl', ['$scope', '$routeParams', '$location', 'ShoppingList', ShoppingListEditCtrl]
+ShoppingListControllers.controller 'ShoppingListCreateCtrl', ['$scope', '$routeParams', '$location', 'ShoppingList', ShoppingListCreateCtrl]
