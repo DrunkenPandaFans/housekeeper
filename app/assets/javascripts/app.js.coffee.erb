@@ -17,7 +17,7 @@ router = ($routeProvider) ->
     templateUrl: '<%= asset_path "circle.html" %>',
     controller: 'CircleDetailCtrl'
   }
-  $routeProvider.when '/circle/:id/shopping-list/new', {
+  $routeProvider.when '/circle/:circleId/shopping-list/new', {
     templateUrl: '<%= asset_path "shopping-list-create.html" %>',
     controller: 'ShoppingListCreateCtrl'
   }
