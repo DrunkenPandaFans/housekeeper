@@ -38,6 +38,10 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+group :test do
+  gem 'codecov', require: false
+end
+
 gem 'spring', group: :development
 
 gem 'rails_12factor', group: :production
@@ -48,9 +52,3 @@ gem 'rails_12factor', group: :production
 # Use unicorn as the app server
 # gem 'unicorn'
 
-# Use Capistrano for deployment
-# gem 'capistrano', group: :development
-
-# Use debugger
-# gem 'debugger', group: [:development, :test]
-#
