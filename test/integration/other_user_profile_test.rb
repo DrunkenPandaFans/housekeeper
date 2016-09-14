@@ -9,11 +9,11 @@ class OtherUserProfileTest < ActionDispatch::IntegrationTest
   end
 
   test "get profile of different user" do
-    get "/users/#{@jan.id}", {}, 
-      {"Authorization" => token_auth("abcde")}
+    get "/users/#{@jan.id}",
+        headers: {"Authorization" => token_auth("abcde")}
 
     assert_equal 200, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     user = json(response.body)
     assert_equal @jan.name, user[:name]
@@ -23,20 +23,20 @@ class OtherUserProfileTest < ActionDispatch::IntegrationTest
     get "/users/#{@jan.id}"
 
     assert_equal 401, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     error = json(response.body)
     assert_equal "Bad credentials.", error[:error]
   end
 
   test "get profile of nonexistent user" do
-    get "/users/-12323", {},
-      {"Authorization" => token_auth(@jan.token)}
+    get "/users/-12323",
+        headers: {"Authorization" => token_auth(@jan.token)}
 
     assert_equal 404, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     error = json(response.body)
     assert_equal "User not found.", error[:error]
-  end 
+  end
 end

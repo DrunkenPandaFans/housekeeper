@@ -7,10 +7,10 @@ class UserProfileTest < ActionDispatch::IntegrationTest
   end
 
   test "get authenticated user profile" do
-    get '/user', {}, {"Authorization" => token_auth(@jan.token)}
+    get '/user', params: {"Authorization" => token_auth(@jan.token)}
 
     assert_equal 200, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     assert_equal @jan.id, json(response.body)[:id]
   end
@@ -19,7 +19,7 @@ class UserProfileTest < ActionDispatch::IntegrationTest
     get '/user'
 
     assert_equal 401, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     error = json(response.body)
     assert_equal "Bad credentials.", error[:error]

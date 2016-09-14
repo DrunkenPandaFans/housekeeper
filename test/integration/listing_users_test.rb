@@ -14,27 +14,27 @@ class ListingUsersTest < ActionDispatch::IntegrationTest
     get "/users"
 
     assert_equal 401, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     error = json(response.body)
     assert_equal "Bad credentials.", error[:error]
   end
 
   test "listing of users" do
-    get "/users", {}, {"Authorization" => token_auth("abcdefg")}
+    get "/users", headers: {"Authorization" => token_auth("abcdefg")}
 
     assert_equal 200, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     users = json(response.body)
     assert_equal 2, users.size
   end
 
   test "do not send user token in users listing" do
-    get "/users", {}, {"Authorization" => token_auth("abcdefg")}
+    get "/users", headers: {"Authorization" => token_auth("abcdefg")}
 
     assert_equal 200, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     users = json(response.body)
     assert users

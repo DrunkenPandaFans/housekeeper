@@ -14,10 +14,10 @@ class UpdateUserTest < ActionDispatch::IntegrationTest
   end
 
   test "update authenticated user" do
-    patch '/user', @update_data, {"Authorization" => token_auth(@jan.token)}
+    patch '/user', params: @update_data, headers: {"Authorization" => token_auth(@jan.token)}
 
     assert_equal 200, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     @jan.reload
 
@@ -28,28 +28,32 @@ class UpdateUserTest < ActionDispatch::IntegrationTest
   end
 
   test "update unauthenticated user" do
-    patch '/user', @update_data
+    patch '/user', params: @update_data
 
     assert_equal 401, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     error = json(response.body)
     assert "Bad credentials.", error[:error]
   end
 
   test "update user token" do
-    patch '/user', {token: 'newtoken'}, {"Authorization" => token_auth(@jan.token)}
+    patch '/user',
+          params: {token: 'newtoken'},
+          headers: {"Authorization" => token_auth(@jan.token)}
 
     assert_equal 200, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     assert_equal "abcdefg1234", @jan.reload.token
   end
 
   test "update with empty email" do
-    patch '/user', {email: ''}, {"Authorization" => token_auth(@jan.token)}
+    patch '/user',
+          params: {email: ''},
+          headers: {"Authorization" => token_auth(@jan.token)}
 
     assert_equal 422, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
   end
 end

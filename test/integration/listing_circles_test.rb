@@ -10,7 +10,7 @@ class ListingCirclesTest < ActionDispatch::IntegrationTest
     get '/circles'
 
     assert_equal 200, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     assert_equal Circle.count, json(response.body).size
   end
@@ -19,7 +19,7 @@ class ListingCirclesTest < ActionDispatch::IntegrationTest
     get '/circles?name=amazon'
 
     assert_equal 200, response.status
-    assert_equal Mime::JSON, response.content_type
+    assert_equal Mime[:json], response.content_type
 
     assert_equal 1, json(response.body).size
   end
