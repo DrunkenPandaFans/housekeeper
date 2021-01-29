@@ -1,0 +1,58 @@
+<div class="row">
+  <div class="col-md-8 panel panel-default info-panel">
+    <div class="panel-heading">{{circle.name}}</div>
+    <div class="row panel-body">
+      <div class="col-md-3">
+        <a href="#" class="thumbnail">
+          <img ng-src="{{circle.logo}}" alt="{{circle.name}} avatar"/>
+        </a>
+      </div>
+      <div class="col-md-9">
+        <p>{{circle.description}}</p>
+        <div class="pull-right">
+          <a href="#/circle/{{circle.id}}/edit" class="btn btn-default">Edit</a>
+          <a ng-click="remove(circle.id)" class="btn btn-danger">Remove</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 panel panel-default info-panel">
+    <div class="panel-heading">Members</div>
+    <div class="row panel-body">
+      <div class="col-md-4" ng-repeat="m in circle.members">
+        <a href="#" class="thumbnail">
+          <img ng-src="m.image" alt="m.name"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <h2>
+    Shopping Lists
+    <a href="#/circle/{{circle.id}}/shopping-list/new">
+      <i class="glyphicon glyphicon-plus"> </i>
+    </a>
+  </h2>
+  <table class="table" ng-show="hasShoppingLists()">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Deadline</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="sl in circle.shopping_lists">
+        <td>
+          <a href="#/circle/{{circle.id}}/shopping-list/{{sl.id}}">{{ sl.name }}</a>
+        </td>
+        <td>{{ sl.description }}</td>
+        <td>{{ sl.deadline }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p ng-hide="hasShoppingLists()">This circle hasn't been out shopping, yet...</p>
+</div>

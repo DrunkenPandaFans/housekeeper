@@ -2,7 +2,12 @@ language: ruby
 rvm:
   - "1.9.3"
   - "2.0.0"
-services:
-  - mongodb
+  - "2.1.0"
+addons:
+  postgresql: "9.3"
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - cp config/database.yml.travis config/database.yml
+  - bundle exec rake db:migrate
 script:
-  - rake test
+  - bundle exec rake test

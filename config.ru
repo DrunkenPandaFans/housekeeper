@@ -1,15 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/app/boot')
+# This file is used by Rack-based servers to start the application.
 
-require 'sprockets'
-
-styles = Sprockets::Environment.new
-styles.append_path 'app/frontend/styles'
-
-scripts = Sprockets::Environment.new
-scripts.append_path 'app/frontend/scripts'
-
-map('/css') { run styles }
-
-map('/js')  { run scripts }
-
-map('/')    { run Housekeeper::App }
+require ::File.expand_path('../config/environment',  __FILE__)
+run Rails.application

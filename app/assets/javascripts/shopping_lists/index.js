@@ -1,0 +1,3 @@
+//= ./services
+//= ./controllers
+//= ./shopping-lists

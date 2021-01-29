@@ -1,20 +1,6 @@
-require 'rake/testtask'
-require 'fileutils'
+# Add your own tasks in files placed in lib/tasks ending in .rake,
+# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
-$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + '/app')
+require File.expand_path('../config/application', __FILE__)
 
-require 'boot'
-
-Rake::TestTask.new do |t|
- t.libs << 'app' << 'test'
- t.test_files = FileList['test/*_test.rb']
- t.verbose = true
-end
-
-desc "Start the server"
-task :start do
-  Kernel.exec "bundle exec foreman start"
-end
-
-desc Rake::Task['test'].comment
-task :default => :test
+Housekeeper::Application.load_tasks

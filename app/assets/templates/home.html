@@ -1,0 +1,10 @@
+<p>Here are your circles</p>
+
+<a href="#/circle/new" ng-click="showCircleForm">Create Circle</a>
+
+<div ng-repeat="circle in circles">
+  <h3 class="sub-header">
+    <a href="#/circle/{{circle.id}}">{{circle.name}}</a>
+  </h3>
+  <p>{{circle.description}}</p>
+</div>
